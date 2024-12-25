@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 01:34:37 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/24 15:56:02 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/25 22:04:31 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,8 @@ char *handle_single_quotes(char **input)
 	if (**input == '\'')
 	{
 		// Append the remaining part
-		temp = strndup(start, *input - start);
-		res = ft_strjoin(res, temp);
-		free(temp);
+		temp = ft_strndup(start, *input - start);
+		res = ft_strjoin_free(res, temp);
 		(*input)++;	  // Move past the closing quote
 		return (res); // Return the string
 	}
@@ -71,22 +70,18 @@ char *handle_double_quotes(char **input, char **env)
 
 	(*input)++;
 	start = *input;
-	res = strdup("");
+	res = ft_strdup("");
 	while (**input && **input != '"')
 	{
 		if (**input == '$')
 		{
 			// Append the part before the variable
-			temp = strndup(start, *input - start);
-			res = ft_strjoin(res, temp);
-			free(temp);
+			temp = ft_strndup(start, *input - start);
+			res = ft_strjoin_free(res, temp);
 			// Handle the variable
 			var_value = handle_var(input, env);
 			if (var_value)
-			{
-				res = ft_strjoin(res, var_value);
-				free(var_value);
-			}
+				res = ft_strjoin_free(res, var_value);
 			start = *input; // Update start to the new position
 		}
 		else
@@ -97,9 +92,8 @@ char *handle_double_quotes(char **input, char **env)
 	if (**input == '"')
 	{
 		// Append the remaining part
-		temp = strndup(start, *input - start);
-		res = ft_strjoin(res, temp);
-		free(temp);
+		temp = ft_strndup(start, *input - start);
+		res = ft_strjoin_free(res, temp);
 		(*input)++;	  // Move past the closing quote
 		return (res); // Return the string
 	}

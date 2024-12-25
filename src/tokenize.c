@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 23:44:49 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/23 06:51:57 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/25 22:12:21 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,14 @@ void	add_token(t_token **tokens, t_token *new_token)
 
 static bool is_first_and_last_char(const char *str, char ch)
 {
-    if (!str || strlen(str) == 0)
+    if (!str || ft_strlen(str) <= 1)
         return false;
 
-    size_t len = strlen(str);
+    size_t len = ft_strlen(str);
     return (str[0] == ch && str[len - 1] == ch);
 }
 
-static char *remove_first_and_last_char(const char *str)
+static char *remove_first_and_last_char(char *str)
 {
     size_t len = strlen(str);
 
@@ -75,6 +75,7 @@ static char *remove_first_and_last_char(const char *str)
     strncpy(new_str, str + 1, len - 2);
     new_str[len - 2] = '\0'; // Null-terminate the new string
 
+	free((char *)str);
     return new_str;
 }
 
@@ -83,6 +84,7 @@ t_token	*ft_tokenize(char *input, char **env)
 	t_token	*tokens;
 	char	*str;
 	char 	**expanded;
+	int		i;
 
 	tokens = NULL;
 	while (*input)
@@ -104,7 +106,6 @@ t_token	*ft_tokenize(char *input, char **env)
 		}
 		if (*input == '&' && *(input + 1) == '&')
 		{
-			printf("input: %s\n", input);
 			add_token(&tokens, create_token(TOKEN_CMDAND, "&&"));
 			input += 2;
 		}
@@ -139,15 +140,17 @@ t_token	*ft_tokenize(char *input, char **env)
 			str = gather_word(&input, env);
 			if (str && ft_strcmp(str, ""))
 			{
-				if (is_first_and_last_char(str, '*'))
+				if (is_first_and_last_char(str, 31))
 				{
 					str = remove_first_and_last_char(str);
 					expanded = ft_split(str, ' ');
-					while (expanded != NULL && *expanded)
+					i = 0;
+					while (expanded[i] != NULL)
 					{
-						add_token(&tokens, create_token(TOKEN_STR, *expanded));
-						expanded++;
+						add_token(&tokens, create_token(TOKEN_STR, expanded[i]));
+						i++;
 					}
+					ft_free_array(expanded);
 				}
 				else
 					add_token(&tokens, create_token(TOKEN_STR, str));

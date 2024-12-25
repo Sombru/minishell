@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bool.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:53:08 by nspalevi          #+#    #+#             */
-/*   Updated: 2024/12/22 01:50:39 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/25 22:59:47 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,31 @@ bool	is_bin_command(char *command)
 		i++;
 	}
 	return (false);
+}
+
+bool  is_output_redirection(t_redirections *redirections)
+{
+   while (redirections)
+   {
+        if (ft_strcmp(redirections->type, STDOUT) == 0)
+           return (true);
+        if (ft_strcmp(redirections->type, APPEND) == 0)
+           return (true);
+       redirections = redirections->next;
+   }
+   return (false);
+   
+}
+
+bool is_input_redirection(t_redirections *redirections)
+{
+    while (redirections)
+    {
+        if (ft_strcmp(redirections->type, STDIN) == 0)
+            return (true);
+        if (ft_strcmp(redirections->type, HEREDOC) == 0)
+            return (true);
+        redirections = redirections->next;
+    }
+    return (false);
 }

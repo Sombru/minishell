@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_protocol.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/24 22:15:49 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/25 22:58:54 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,33 +22,6 @@ static int count_args(char **args)
     return (count);
 }
 
-static int  is_output_redirection(t_redirections *redirections)
-{
-   while (redirections)
-   {
-        if (ft_strcmp(redirections->type, STDOUT) == 0)
-           return (1);
-        if (ft_strcmp(redirections->type, APPEND) == 0)
-           return (1);
-       redirections = redirections->next;
-   }
-   return (0);
-   
-}
-
-static int is_input_redirection(t_redirections *redirections)
-{
-    while (redirections)
-    {
-        if (ft_strcmp(redirections->type, STDIN) == 0)
-            return (1);
-        if (ft_strcmp(redirections->type, HEREDOC) == 0)
-            return (1);
-        redirections = redirections->next;
-    }
-    return (0);
-}
-
 int	execution_protocol(t_command *commands, char **env)
 {
     t_command       *current;
@@ -59,6 +32,7 @@ int	execution_protocol(t_command *commands, char **env)
     int             status;
     int             pipefd[2];
     int             redir_status;
+    char            **args_copy;
 
     original_fds[0] = dup(STDIN_FILENO);
     original_fds[1] = dup(STDOUT_FILENO);
@@ -88,7 +62,7 @@ int	execution_protocol(t_command *commands, char **env)
                 redirections = find_redirections(current->arguemnts);
                 if (redirections)
                 {
-                    redir_status =  apply_redirections(redirections, env);
+                    redir_status = apply_redirections(redirections, env);
                     current->arguemnts = reparse_args(current->arguemnts, count_args(current->arguemnts));
                 }
 
@@ -101,8 +75,10 @@ int	execution_protocol(t_command *commands, char **env)
                 close(prev_fd);
                 if (redir_status == -1)
                     break;
+                args_copy = ft_arrcpy(current->arguemnts);
                 free_redirections(redirections);
-                exit(execute_command(current->arguemnts, env));
+                free_commands(commands);
+                exit(execute_command(args_copy, env));
             }
             else if (pid > 0)
             {
@@ -152,6 +128,8 @@ int	execution_protocol(t_command *commands, char **env)
 
 int execute_command(char **args, char **env)
 {
+    char    *tmp;
+
     if (args[0] == NULL)
         return (SUCCESS);
 	else if (ft_strcmp(args[0], ECHO_CMD) == 0)
@@ -171,6 +149,8 @@ int execute_command(char **args, char **env)
 	else if (is_bin_command(args[0]))
 		return(execute_bin_command(args, env));
 	ft_putstr_fd(RED "minishell:" RST" command not found: "RED"`" , STDERR_FILENO);
-	ft_putstr_fd(ft_strjoin(args[0], "'\n"RST), STDERR_FILENO);
+    tmp = ft_strjoin(args[0], "'\n"RST);
+	ft_putstr_fd(tmp, STDERR_FILENO);
+    free(tmp);
 	return (COMMAND_NOT_FOUND);
 }

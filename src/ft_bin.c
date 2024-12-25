@@ -3,38 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bin.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 05:02:57 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/24 22:08:56 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/25 22:00:34 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static char *get_bin_path(char *command, char **env)
+char *get_bin_path(char *command, char **env)
 {
-	int		i;
-	char	*path;
-	char	**path_split;
+    char **path_split;
+    char *tmp;
+    char *ret_path;
+    int i;
 
+	path_split = ft_split(ft_getenv("PATH", env), ':');
 	i = 0;
-	path = ft_getenv("PATH", env);
-	path_split = ft_split(path, ':');
-	while (path_split[i])
-	{
-		path = ft_strjoin(path_split[i], "/");
-		path = ft_strjoin(path, command);
-		if (access(path, F_OK) == 0)
-		{
-			free(path_split);
-			return (path);
-		}
-		free(path);
-		i++;
-	}
-	free(path_split);
-	return (NULL);
+    while (path_split[i])
+    {
+        tmp = ft_strjoin(path_split[i], "/");
+        ret_path = ft_strjoin(tmp, command);
+        free(tmp);
+        if (access(ret_path, F_OK) == 0)
+        {
+            ft_free_array(path_split);
+            return (ret_path);
+        }
+        free(ret_path);
+        i++;
+    }
+    ft_free_array(path_split);
+    return (NULL);
 }
 
 int	execute_bin_command(char **args, char **env)
@@ -53,7 +54,6 @@ int	execute_bin_command(char **args, char **env)
 	pid = fork();
 	if (pid == 0)
 	{
-		signal(SIGINT, SIG_DFL); // Child uses default SIGINT
 		status = execve(path, args, env);
 		perror("execve");
 		free(path);

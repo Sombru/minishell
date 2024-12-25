@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections_apply.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 05:55:28 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/24 20:37:00 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/25 17:33:36 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,6 @@ int	heredoc_redirection(char *delimiter, char **env)
 	matching_mode = 1;
     while (matching_mode != 0)
     {
-		printf("%d\n", matching_mode);
         buffer = readline("heredoc> ");
         if (!buffer || !matching_mode) // CTRL+D or read error
             break;
@@ -128,7 +127,7 @@ int	heredoc_redirection(char *delimiter, char **env)
             free(buffer);
             break;
         }
-        // Optionally expand variables here if you want
+        buffer = handle_var_heredoc(&buffer, env);
 		env = env ;
         write(fd, buffer, ft_strlen(buffer));
         write(fd, "\n", 1);

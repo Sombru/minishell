@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 00:02:42 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/24 17:47:51 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/25 11:11:46 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,36 @@
 
 extern int matching_mode;
 
+static char *sigint_promt(void)
+{
+	char	*prompt;
+	char	*exit_status;
+	char	*colored_status;
+
+	exit_status = ft_itoa(manage_exit_status(555));
+	if (ft_strcmp(exit_status, "0") == 0)
+		colored_status = ft_strjoin(G, exit_status);
+	else
+		colored_status = ft_strjoin(RED, exit_status);
+	prompt = ft_strjoin(colored_status, C" minishell$> "RST);
+	free(exit_status);
+	free(colored_status);
+	return (prompt);
+}
+
 void	handle_sigint(int sig)
 {
 	(void)sig;
+	char	*tmp;
 
 	if (matching_mode)
 	{
 		matching_mode = 0;
-		write(STDERR_FILENO, "\n", 1);
-		rl_replace_line("", 0);
+		write(STDOUT_FILENO, "\n", 1);
 		rl_done = 1; // Forces readline() to return NULL
-		// unlink(HEREDOC_TMP);
+		tmp = sigint_promt();
+		write(STDERR_FILENO, tmp, ft_strlen(tmp));
+		free(tmp);
 		return ;
 	}
 	write(STDOUT_FILENO, "\n", 1);

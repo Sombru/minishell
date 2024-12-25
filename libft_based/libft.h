@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/16 11:34:30 by pkostura          #+#    #+#             */
-/*   Updated: 2024/12/23 08:25:59 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/25 22:39:58 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,19 +63,25 @@ char	*ft_get_line(char *string);
 char	*ft_new_string(char *string);
 
 char	*get_next_line(int fd);
-char	*ft_read_to_left_string(int fd, char *string);
-
 
 // new
+
 char	*ft_remove_char(const char *str, char s);
 char	*ft_strjoin_free(char *s1, char *s2);
 char	*ft_remove_last_char(const char *str, char ch);
 char	*ft_stradd_start_end(char *str, char ch);
 char	*ft_strncpy(char *dest, const char *src, size_t n);
 char	*ft_strcpy(char *dest, const char *src);
-char	*ft_arrcomb(char **array, const char ch);
 char	*ft_strcat(char *dest, const char *src);
-void	*ft_realloc(void *ptr, size_t size);
+void	*ft_realloc(void *ptr, size_t old_size, size_t new_size);
+char	*ft_strndup(const char *s, size_t n);
+
+// arrays
+
+char	*ft_arrcomb(char **array, const char ch);
+char	**ft_arrcpy(char **array);
+char    **ft_arrstr_rm(char **array, int index, int size);
+void	ft_free_array(char **arr);
 
 
 #endif

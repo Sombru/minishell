@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   t_wildcard.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 02:13:52 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/21 15:48:03 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/25 22:44:01 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static char	**collect_files(DIR *dir, const char *start, const char *end)
 	{
 		if (entry->d_name[0] != '.' && match_pattern(entry->d_name, start, end))
 		{
-			files = realloc(files, sizeof(char *) * (count + 2));
+			files = ft_realloc(files, sizeof(char *) * count, sizeof(char *) * (count + 2));
 			if (!files)
 				return (NULL);
 
@@ -80,20 +80,19 @@ static char	*get_directory_contents(char *start, char *end)
 	char	**files;
 	char	*result;
 
-	if (!end)
-		end = ft_strdup("");
-	if (!start)
-		start = ft_strdup("");
 	dir = opendir(".");
 	if (dir == NULL)
 		return (NULL);
-
+	if (!start)
+		start = "";
+	if (!end)
+		end = "";
 	files = collect_files(dir, start, end);
 	closedir(dir);
 	if (!files)
 		return (NULL);
 	result = ft_arrcomb(files, ' ');
-	free(files);
+	ft_free_array(files);
 	return (result);
 }
 char	*handle_wildcard_expansion(char *word)
@@ -107,20 +106,24 @@ char	*handle_wildcard_expansion(char *word)
 	{
 		free(word);
 		free(pattern);
-		return (ft_stradd_start_end(get_directory_contents("", ""), '*'));
+		expanded = get_directory_contents("", "");
+		expanded = ft_stradd_start_end(expanded, 31);
+		return (expanded);
 	}
 	wildcard = word;
 	wildcard = ft_strchr(wildcard, '*') + 1;
 	if (!pattern[1] && *wildcard != '\0')
 	{
+		pattern = ft_realloc(pattern, sizeof(char *) * 2, sizeof(char *) * 3);
 		pattern[1] = pattern[0];
 		pattern[0] = ft_strdup("");
+		pattern[2] = NULL;
 	}
 	expanded = get_directory_contents(pattern[0], pattern[1]);
 	free(word);
-	free(pattern);
+	ft_free_array(pattern);
 	if (expanded == NULL)
 		return (NULL);
-	expanded = ft_stradd_start_end(expanded, '*');
+	expanded = ft_stradd_start_end(expanded, 31);
 	return (expanded);
 }

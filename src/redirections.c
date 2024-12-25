@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 04:46:08 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/24 19:46:12 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/25 17:35:27 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,18 @@
 
 char	**reparse_args(char **args, int num_of_args)
 {
-	int	j;
 	int i;
 
 	i = 0;
-	while (args[i])
+	while (i < num_of_args)
 	{
 		if (ft_strcmp(args[i], STDIN) == 0 || ft_strcmp(args[i], STDOUT) == 0
 			|| ft_strcmp(args[i], APPEND) == 0 || ft_strcmp(args[i], HEREDOC) == 0)
 		{
-			j = i;
-			args[j] = ft_strdup(args[num_of_args - 2]);
-			args[j + 1] = ft_strdup(args[num_of_args - 1]);
-			args[num_of_args - 2] = NULL;
+			args = ft_arrstr_rm(args, i, num_of_args);
+            num_of_args--;
+            args = ft_arrstr_rm(args, i, num_of_args);
+            num_of_args--;
 		}
 		i++;
 	}

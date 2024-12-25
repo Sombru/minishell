@@ -1,23 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin_free.c                                  :+:      :+:    :+:   */
+/*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/07 16:11:09 by pkostura          #+#    #+#             */
-/*   Updated: 2024/12/25 17:18:31 by pasha            ###   ########.fr       */
+/*   Created: 2024/12/25 22:01:26 by pasha             #+#    #+#             */
+/*   Updated: 2024/12/25 22:01:39 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-// function to join strings s1 and s2 to new string and free old strings
-char	*ft_strjoin_free(char *s1, char *s2)
-{
-	char	*new_str;
 
-	new_str = ft_strjoin(s1, s2);
-	free(s1);
-	free(s2);
-	return (new_str);
+// duplicates n characters from the string s
+char	*ft_strndup(const char *s, size_t n)
+{
+    char	*new;
+    size_t	len;
+
+    len = ft_strlen(s);
+    if (n < len)
+        len = n;
+    new = (char *)malloc(sizeof(*new) * (len + 1));
+    if (!new)
+        return (NULL);
+    ft_memcpy(new, s, len);
+    new[len] = '\0';
+    return (new);
 }

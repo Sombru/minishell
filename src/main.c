@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/02 11:34:40 by nspalevi          #+#    #+#             */
-/*   Updated: 2024/12/24 22:26:32 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/25 22:51:01 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ int	main(int argc, char **argv, char **env_list)
 	env = store_environment(env_list);
 	while (1)
 	{
+		unlink(HEREDOC_TMP);
 		handle_signals();
 		input = display_prompt();
 		if (input == NULL)
@@ -88,9 +89,9 @@ int	main(int argc, char **argv, char **env_list)
 		// 	print_commands(commands);
 		if (tokens)
 		{
+			free_tokens(tokens);
 			execution_protocol(commands, env);
 			free_commands(commands);
-			free_tokens(tokens);
 			free(input);
 		}
 		else

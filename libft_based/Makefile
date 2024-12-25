@@ -7,7 +7,8 @@ SRCS = ft_isalpha.c ft_isdigit.c ft_isalnum.c ft_isascii.c ft_isprint.c \
 		ft_substr.c ft_strjoin.c ft_strtrim.c ft_split.c ft_itoa.c ft_strmapi.c \
 		ft_striteri.c ft_putchar_fd.c ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c \
 		ft_remove_char.c ft_strjoin_free.c ft_remove_last_char.c ft_stradd_start_end.c \
-		ft_strncpy.c ft_strcpy.c ft_strcat.c ft_arrcomb.c ft_realloc.c \
+		ft_strncpy.c ft_strcpy.c ft_strcat.c ft_realloc.c ft_strndup.c \
+		ft_arrcomb.c ft_arrcpy.c ft_free_array.c ft_arrstr_rm.c\
 		get_next_line.c \
 
 OBJS = $(SRCS:.c=.o)

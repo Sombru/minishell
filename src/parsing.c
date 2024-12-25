@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 15:34:06 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/22 05:57:34 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/25 13:16:37 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,32 +57,27 @@ t_command *parse_tokens(t_token *tokens)
 		{
 			if (tokens->type == TOKEN_STDIN)
 			{
-				args[i] = ft_strdup(STDIN);
-				i++;
+				args[i++] = ft_strdup(STDIN);
 				tokens = tokens->next;
 			}
-			if (tokens->type == TOKEN_STDOUT)
+			else if (tokens->type == TOKEN_STDOUT)
 			{
-				args[i] = ft_strdup(STDOUT);
-				i++;
+				args[i++] = ft_strdup(STDOUT);
 				tokens = tokens->next;
 			}
-			if (tokens->type == TOKEN_APPEND)
+			else if (tokens->type == TOKEN_APPEND)
 			{
-				args[i] = ft_strdup(APPEND);
-				i++;
+				args[i++] = ft_strdup(APPEND);
 				tokens = tokens->next;
 			}
-			if (tokens->type == TOKEN_HEREDOC)
+			else if (tokens->type == TOKEN_HEREDOC)
 			{
-				args[i] = ft_strdup(HEREDOC);
-				i++;
+				args[i++] = ft_strdup(HEREDOC);
 				tokens = tokens->next;
 			}
 			else
 			{
-				args[i] = ft_strdup(tokens->value);
-				i++;
+				args[i++] = ft_strdup(tokens->value);
 				tokens = tokens->next;
 			}
 		}
@@ -118,14 +113,21 @@ t_command *parse_tokens(t_token *tokens)
 
 void	free_commands(t_command *commands)
 {
-	t_command *current;
-	t_command *next;
+	t_command	*current;
+	t_command	*next;
+	int			i;
 
 	current = commands;
 	while (current)
 	{
-		next = current->next;
+		i = 0;
+		while (current->arguemnts[i])
+		{
+			free(current->arguemnts[i]);
+			i++;
+		}
 		free(current->arguemnts);
+		next = current->next;
 		free(current);
 		current = next;
 	}

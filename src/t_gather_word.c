@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   t_gather_word.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 01:33:07 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/23 06:54:40 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/25 17:07:36 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ char *gather_word(char **input, char **env)
     char tmp[2];
     char *var;
 	int  quotes_flag;
+    char *wildcard;
 
 	word = ft_strdup("");
 	quotes_flag = 0;
@@ -55,6 +56,23 @@ char *gather_word(char **input, char **env)
         }
     }
 	if (!quotes_flag && ft_strchr(word, '*'))
-		return(handle_wildcard_expansion(word));
+	{
+        wildcard = handle_wildcard_expansion(ft_strdup(word));
+        if (!wildcard)
+        {
+            if (**input != '\0')
+            {
+                tmp[0] = **input;
+                tmp[1] = '\0';
+                word = ft_strjoin_free(word, ft_strdup(tmp));
+                (*input)++;
+            }
+        }
+        else
+        {
+            free(word);
+            return (wildcard);
+        }
+    }
     return word;
 }
