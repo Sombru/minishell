@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 01:41:43 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/21 03:45:21 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/26 15:35:52 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,53 +44,31 @@ char *handle_var(char **input, char **env)
     return (ft_strdup(var_value));
 }
 
-char *handle_var_heredoc(char **input, char **env)
+char *handle_var_heredoc(char **buffer, char **env)
 {
-    char *result = ft_strdup("");
-    char *var_name;
-    char *var_value;
-    char *start;
-    char *temp;
-    int len;
+    char *result;
+    char append[2];
+    char *var;
 
-    while (**input)
+    env = env;
+    result = ft_strdup("");
+    while (**buffer)
     {
-        if (**input == '$')
+        if (**buffer == '$')
         {
-            (*input)++;
-            // Handle the special case for "$?"
-            if (**input == '?')
-            {
-                (*input)++;
-                temp = ft_itoa(manage_exit_status(555)); // Retrieve the current exit status
-                result = ft_strjoin_free(result, temp);
-                free(temp);
-                continue;
-            }
-            if (**input == '\0' || isspace(**input) || !ft_isalnum(**input))
-            {
-                result = ft_strjoin_free(result, ft_strdup("$"));
-                continue;
-            }
-            start = *input;
-            while (**input && (ft_isalnum(**input) || **input == '_'))
-                (*input)++;
-            len = *input - start;
-            var_name = strndup(start, len);
-            if (!var_name)
-                return (NULL);
-            var_value = ft_getenv(var_name, env);
-            free(var_name);
-            if (!var_value)
-                var_value = "";
-            result = ft_strjoin_free(result, ft_strdup(var_value));
+            var = handle_var(buffer, env);
+            if (!var || !ft_strcmp(var, ""))
+                return (free(result), NULL);
+            result = ft_strjoin_free(result, var);
+            continue;
         }
         else
         {
-            temp = strndup(*input, 1);
-            result = ft_strjoin_free(result, temp);
-            (*input)++;
+            append[0] = **buffer;
+            append[1] = '\0';
+            result = ft_strjoin_free(result, ft_strdup(append));
+            (*buffer)++;
         }
     }
-    return result;
+    return (result);
 }

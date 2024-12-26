@@ -6,7 +6,7 @@
 /*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/02 11:34:40 by nspalevi          #+#    #+#             */
-/*   Updated: 2024/12/25 22:51:01 by pasha            ###   ########.fr       */
+/*   Updated: 2024/12/26 20:25:56 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static void	handle_input_null(char *input, char **env)
 	{
 		printf("\n");
 		free(input);
-		free_environment(env);
+		ft_free_array(env);
 		rl_clear_history();
 		exit(manage_exit_status(555));
 	}
@@ -100,17 +100,4 @@ int	main(int argc, char **argv, char **env_list)
 	return (0);
 }
 
-void	free_environment(char **env)
-{
-	int	i;
 
-	i = 0;
-	if (!env)
-		return ;
-	while (env[i])
-	{
-		free(env[i]);
-		i++;
-	}
-	free(env);
-}

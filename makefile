@@ -2,7 +2,7 @@
 NAME	= minishell
 
 # Compiler
-CC		= gcc
+CC		= cc
 CFLAGS  = -g -Wall -Wextra -Werror
 
 # Libft

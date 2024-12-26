@@ -6,7 +6,7 @@
 /*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/25 22:58:54 by pasha            ###   ########.fr       */
+/*   Updated: 2024/12/26 16:20:53 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,7 @@ int	execution_protocol(t_command *commands, char **env)
 
             pid = fork();
             if (pid == 0)
-            {
-                
+            {   
                 if (DEBUG_MODE)
                 {
                     ft_putstr_fd("Child process: ", STDERR_FILENO);
@@ -83,8 +82,8 @@ int	execution_protocol(t_command *commands, char **env)
             else if (pid > 0)
             {
                 signal(SIGINT, SIG_IGN);
-                close(pipefd[1]);
                 waitpid(pid, &status, 0);
+                close(pipefd[1]);
                 close(prev_fd);
                 prev_fd = pipefd[0];
 
@@ -101,10 +100,12 @@ int	execution_protocol(t_command *commands, char **env)
         }
         if (current)
         {
-            dup2(prev_fd, STDIN_FILENO);
-            close(prev_fd);
-
             redirections = find_redirections(current->arguemnts);
+            if (redirections && ft_strcmp(redirections->type, HEREDOC) == 0)
+                dup2(original_fds[0], STDOUT_FILENO);
+            else
+                dup2(prev_fd, STDIN_FILENO);
+            close(prev_fd);
             if (redirections)
             {
                 redir_status = apply_redirections(redirections, env);

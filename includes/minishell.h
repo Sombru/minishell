@@ -6,7 +6,7 @@
 /*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2024/12/25 23:01:35 by pasha            ###   ########.fr       */
+/*   Updated: 2024/12/26 15:23:55 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@
 
 # define DEBUG_MODE 0
 # define MAX_ENV_SIZE 1024
-# define HEREDOC_TMP "$%%$XxXxX_heredoc_tmp_XxXxX$%%$"
+# define HEREDOC_TMP ".$%%$XxXxX_heredoc_tmp_XxXxX$%%$"
 # define STDIN "$%%$XXXXII<IIXXXX&%%$"
 # define STDOUT "$%%$XXXXII>IIXXXX&%%$"
 # define APPEND "$%%$XXXXII>>IIXXXX&%%$"
@@ -213,6 +213,6 @@ char			*handle_double_quotes(char **input, char **env);
 //var_utils
 
 char			*handle_var(char **input, char **env);
-char			*handle_var_heredoc(char **input, char **env);
+char 			*handle_var_heredoc(char **buffer, char **env);
 
 #endif

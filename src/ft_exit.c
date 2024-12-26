@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:11:55 by pkostura          #+#    #+#             */
-/*   Updated: 2024/12/22 00:51:14 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/26 20:26:09 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ int	ft_exit(char **args, char **env)
 	if (handle_exit_arguments(args, &exit_code))
 		return (FAILURE);
 	printf("%d\n", exit_code);
-	free(args);
-	free_environment(env);
+	ft_free_array(args);
+	ft_free_array(env);
 	rl_clear_history();
 	exit(exit_code);
 	return (SUCCESS);

@@ -6,7 +6,7 @@
 /*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 05:55:28 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/25 17:33:36 by pasha            ###   ########.fr       */
+/*   Updated: 2024/12/26 15:56:06 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ int	input_redirection(char *destination)
 		manage_exit_status(1);
 		return (-1);
 	}
+	// fflush(stdin);
 	manage_exit_status(0);
 	close(fd);
 	return (0);
@@ -112,6 +113,8 @@ int	heredoc_redirection(char *delimiter, char **env)
 {
 	int		fd;
 	char	*buffer;
+	char	*expanded;
+	char	*result;
 
 	if (DEBUG_MODE)
 		printf("DEBUG: heredoc redirection\n");
@@ -127,11 +130,12 @@ int	heredoc_redirection(char *delimiter, char **env)
             free(buffer);
             break;
         }
-        buffer = handle_var_heredoc(&buffer, env);
-		env = env ;
-        write(fd, buffer, ft_strlen(buffer));
-        write(fd, "\n", 1);
-        free(buffer);
+		result = buffer;
+        expanded = handle_var_heredoc(&buffer, env);
+		write(fd, expanded, ft_strlen(expanded));
+		write(fd, "\n", 1);
+		free(expanded);
+		free(result);
     }
 	if (!matching_mode)
 	{

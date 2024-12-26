@@ -3,27 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 11:13:47 by pkostura          #+#    #+#             */
-/*   Updated: 2024/12/18 23:38:00 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/26 17:00:38 by pasha            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static void	handle_argument(const char *arg, int *n_option, int last_arg)
+static void	handle_argument(const char *arg, int last_arg)
 {
-	if (ft_strcmp(arg, "-n") == 0)
-	{
-		*n_option = 1;
-	}
-	else
-	{
-		write(STDOUT_FILENO, arg, ft_strlen(arg));
-		if (last_arg != 69)
-			write(STDOUT_FILENO, " ", 1);
-	}
+	write(STDOUT_FILENO, arg, ft_strlen(arg));
+	if (last_arg != 69)
+		write(STDOUT_FILENO, " ", 1);
 }
 
 int	ft_echo(char **args)
@@ -42,9 +35,9 @@ int	ft_echo(char **args)
 	}
 	while (args[i])
 	{
-		if (args[i +1] == NULL)
+		if (args[i + 1] == NULL)
 			last_arg = 69;
-		handle_argument(args[i], &n_option, last_arg);
+		handle_argument(args[i], last_arg);
 		i++;
 	}
 	if (n_option == 0)
