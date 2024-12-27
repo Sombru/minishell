@@ -24,11 +24,9 @@ SRC			= main.c \
 			  input.c \
 			  redirections.c redirections_apply.c \
 			  signals.c \
-			  t_gather_word.c \
-			  t_wildcard.c \
-			  tokenize.c \
+			  tokenize.c t_gather_word.c t_wildcard.c t_utils.c \
 			  parsing.c \
-			  pipes.c \
+			  exe_child.c exe_parent.c\
 			  quotes.c \
 			  var_utils.c \
 			  ft_bin.c \
@@ -43,6 +41,7 @@ all: $(OBJ_PATH) $(LIBFT) $(NAME)
 
 # Rule to compile object files
 $(OBJ_PATH)%.o: $(SRC_DIR)%.c
+	@printf "\r\033[KCompiling $<..."
 	@$(CC) $(CFLAGS) -c $< -o $@ $(INC)
 
 # Create object directory if it doesn't exist
@@ -52,32 +51,30 @@ $(OBJ_PATH):
 # Build libft
 $(LIBFT):
 	@echo "Making libft..."
-	@make -C $(LIBFT_PATH)
+	@make -C $(LIBFT_PATH) --no-print-directory
 	@echo "done"
 
 # Compile the program
 $(NAME): $(OBJS)
+	@echo ""
 	@echo "Compiling Minishell..."
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) $(INC) -lreadline
 	@echo "Minishell ready."
-
-# Bonus target
-bonus: all
 
 # Clean object files
 clean:
 	@echo "Removing .o object files..."
 	@rm -rf $(OBJ_PATH)
-	@make clean -C $(LIBFT_PATH)
+	@make clean -C $(LIBFT_PATH) --no-print-directory
 
 # Clean everything
 fclean: clean
 	@echo "Removing Minishell..."
 	@rm -f $(NAME)
-	@make fclean -C $(LIBFT_PATH)
+	@make fclean -C $(LIBFT_PATH) --no-print-directory
 
 # Rebuild everything
 re: fclean all
 
 # Phony targets
-.PHONY: all re clean fclean bonus
+.PHONY: all re clean fclean

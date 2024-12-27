@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 01:41:43 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/26 15:35:52 by pasha            ###   ########.fr       */
+/*   Updated: 2024/12/27 14:50:19 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,10 @@ char *handle_var(char **input, char **env)
     char *start;
 
     (*input)++;
-
-	// Handle the special case for "$?"
     if (**input == '?')
     {
         (*input)++; 
-        return (ft_itoa(manage_exit_status(555))); // Retrieve the current exit status
+        return (ft_itoa(manage_exit_status(555)));
     }
     if (**input == '\0' || isspace(**input) || !ft_isalnum(**input))
         return (ft_strdup("$"));
@@ -40,7 +38,6 @@ char *handle_var(char **input, char **env)
     free(var_name);
     if (!var_value)
         return (NULL);
-
     return (ft_strdup(var_value));
 }
 

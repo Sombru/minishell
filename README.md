@@ -25,7 +25,7 @@ Minishell is a simple shell program written in C that mimics the basic functiona
 ### Signal Handling
 - **Ctrl-C**: Displays a new prompt on a new line.
 - **Ctrl-D**: Exits the shell.
-- **Ctrl-\**: Does nothing.
+- **Ctrl-\\**: Does nothing.
 ### Additional Features
 - Command history.
 - Executes the correct executable based on the `$PATH` variable.

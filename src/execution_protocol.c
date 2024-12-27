@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_protocol.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/26 16:20:53 by pasha            ###   ########.fr       */
+/*   Updated: 2024/12/27 12:47:31 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,109 +22,92 @@ static int count_args(char **args)
     return (count);
 }
 
-int	execution_protocol(t_command *commands, char **env)
+t_descriptor *get_descriptors(void)
 {
-    t_command       *current;
-    t_redirections  *redirections;
-    int             original_fds[2];
-    int             prev_fd;
-    pid_t           pid;
-    int             status;
-    int             pipefd[2];
-    int             redir_status;
-    char            **args_copy;
+    t_descriptor *descriptor;
 
+    int						original_fds[2];
+    int						prev_fd;
+
+    descriptor = malloc(sizeof(t_descriptor));
     original_fds[0] = dup(STDIN_FILENO);
     original_fds[1] = dup(STDOUT_FILENO);
     prev_fd = dup(STDIN_FILENO);
-    current = commands;
+    descriptor->original_fds[0] = original_fds[0];
+    descriptor->original_fds[1] = original_fds[1];
+    descriptor->prev_fd = prev_fd;
+    return (descriptor);
+}
 
+static int current_command(t_command *current, t_descriptor *descriptor, char **env)
+{
+    t_redirections  *redirections;
+    int             redir_status;
+    
+    redirections = find_redirections(current->arguemnts);
+    if (redirections && ft_strcmp(redirections->type, HEREDOC) == 0)
+        dup2(descriptor->original_fds[0], STDOUT_FILENO);
+    else
+        dup2(descriptor->prev_fd, STDIN_FILENO);
+    close(descriptor->prev_fd);
+    if (redirections)
+    {
+        redir_status = apply_redirections(redirections, env);
+        current->arguemnts = reparse_args(current->arguemnts, count_args(current->arguemnts));
+        free_redirections(redirections);
+    }
+    if (redir_status == -1)
+    {
+        perror("redirections");
+        return (FAILURE);
+    }
+    manage_exit_status(execute_command(current->arguemnts, env));
+    dup2(descriptor->original_fds[0], STDIN_FILENO);
+    dup2(descriptor->original_fds[1], STDOUT_FILENO);
+    return (SUCCESS);
+}
+
+int	execution_protocol(t_command *commands, char **env)
+{
+    t_command       *current;
+    t_descriptor    *descriptor;
+    pid_t           pid;
+    int             status;
+
+    current = commands;
+    descriptor = get_descriptors();
     while (current)
     {
-        redir_status = 0;
         while (current && current->atribute == CHILD)
         {
-            if (pipe(pipefd) == -1)
-            {
-                perror("pipe");
-                break;
-            }
-
+            if (pipe(descriptor->pipefd) == -1)
+                return (FAILURE);
             pid = fork();
             if (pid == 0)
-            {   
-                if (DEBUG_MODE)
-                {
-                    ft_putstr_fd("Child process: ", STDERR_FILENO);
-                    print_args(current->arguemnts);
-                }
-                redirections = find_redirections(current->arguemnts);
-                if (redirections)
-                {
-                    redir_status = apply_redirections(redirections, env);
-                    current->arguemnts = reparse_args(current->arguemnts, count_args(current->arguemnts));
-                }
-
-                if (!is_input_redirection(redirections))
-                    dup2(prev_fd, STDIN_FILENO);
-                if (!is_output_redirection(redirections))
-                    dup2(pipefd[1], STDOUT_FILENO);
-                close(pipefd[0]);
-                close(pipefd[1]);
-                close(prev_fd);
-                if (redir_status == -1)
-                    break;
-                args_copy = ft_arrcpy(current->arguemnts);
-                free_redirections(redirections);
-                free_commands(commands);
-                exit(execute_command(args_copy, env));
-            }
+                handle_child(current, commands, descriptor, env);   
             else if (pid > 0)
             {
                 signal(SIGINT, SIG_IGN);
                 waitpid(pid, &status, 0);
-                close(pipefd[1]);
-                close(prev_fd);
-                prev_fd = pipefd[0];
-
-                dup2(original_fds[0], STDIN_FILENO);
-                dup2(original_fds[1], STDOUT_FILENO);
-
+                handle_parent(descriptor);
                 current = current->next;
             }
             else
-            {
-                perror("fork");
-                break;
-            }
+                return (FAILURE);
         }
         if (current)
         {
-            redirections = find_redirections(current->arguemnts);
-            if (redirections && ft_strcmp(redirections->type, HEREDOC) == 0)
-                dup2(original_fds[0], STDOUT_FILENO);
-            else
-                dup2(prev_fd, STDIN_FILENO);
-            close(prev_fd);
-            if (redirections)
-            {
-                redir_status = apply_redirections(redirections, env);
-                current->arguemnts = reparse_args(current->arguemnts, count_args(current->arguemnts));
-                free_redirections(redirections);
-            }
-            if (redir_status == -1)
-                break;
-            manage_exit_status(execute_command(current->arguemnts, env));
-            dup2(original_fds[0], STDIN_FILENO);
-            dup2(original_fds[1], STDOUT_FILENO);
+            if (current_command(current, descriptor, env) == FAILURE)
+                return (FAILURE);
             if (current->atribute == CMDOR && manage_exit_status(555) == 0)
-                break;
+                return (SUCCESS);
             current = current->next;
         }
     }
-    close(original_fds[0]);
-    close(original_fds[1]);
-    return (0);
+    close(descriptor->original_fds[0]);
+    close(descriptor->original_fds[1]);
+    free(descriptor);
+    return (SUCCESS);
 }
 
 int execute_command(char **args, char **env)

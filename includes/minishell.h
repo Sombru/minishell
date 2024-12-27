@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2024/12/26 15:23:55 by pasha            ###   ########.fr       */
+/*   Updated: 2024/12/27 15:04:16 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,14 @@ typedef struct s_command
 	struct s_command		*next;
 }							t_command;
 
+typedef struct s_descriptors
+{
+    int						original_fds[2];
+	int						pipefd[2];
+    int						prev_fd;
+}							t_descriptor;
+
+
 extern int	matching_mode;
 
 //main
@@ -153,6 +161,7 @@ char			*ft_getenv(const char *name, char **env);
 
 //execution_protocol
 
+t_descriptor 	*get_descriptors(void);
 int				execution_protocol(t_command *commands, char **env);
 int				execute_command(char **args, char **env);
 
@@ -162,8 +171,8 @@ int				execute_bin_command(char **args, char **env);
 
 //pipes
 
-int				execute_pipe(char **args, char **env, int *fds);
-
+int 			handle_child(t_command *current, t_command *commands, t_descriptor *descriptor, char **env);
+int				handle_parent(t_descriptor *descriptor);
 //commands
 
 int				ft_cd(char **args, char **env);
@@ -178,6 +187,8 @@ int				ft_exit(char **args, char **env);
 
 t_token			*ft_tokenize(char *input, char **env);
 void			free_tokens(t_token *tokens);
+t_token			*create_token(t_token_var type, char *value);
+void			add_token(t_token **tokens, t_token *new_token);
 t_token			*create_token(t_token_var type, char *value);
 
 char			*gather_word(char **input, char **env);

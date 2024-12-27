@@ -3,51 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 23:44:49 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/25 22:12:21 by pasha            ###   ########.fr       */
+/*   Updated: 2024/12/27 15:02:13 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-// creates a new token with specific type and value
-t_token	*create_token(t_token_var type, char *value)
-{
-	t_token *new_token;
-
-	new_token = malloc(sizeof(t_token));
-	if (!new_token)
-		return (NULL);
-	new_token->type = type; // sets the type of the token
-	new_token->value = ft_strdup(value);
-	// duplicates the value of the token to avoid memory leaks
-	if (!new_token->value)
-	{
-		free(new_token);
-		return (NULL);
-	}
-	new_token->next = NULL;
-	return (new_token);
-}
-
-void	add_token(t_token **tokens, t_token *new_token)
-{
-	t_token *current;
-
-	if (!new_token)
-		return ;
-	if (!*tokens)
-	{
-		*tokens = new_token;
-		return ;
-	}
-	current = *tokens;
-	while (current->next)
-		current = current->next;
-	current->next = new_token;
-}
 
 static bool is_first_and_last_char(const char *str, char ch)
 {
@@ -60,22 +23,18 @@ static bool is_first_and_last_char(const char *str, char ch)
 
 static char *remove_first_and_last_char(char *str)
 {
-    size_t len = strlen(str);
+    size_t	len;
+	char	*new_str;
 
-    // If the string is too short to remove first and last characters, return an empty string
+	len = ft_strlen(str);
     if (len <= 2)
-        return strdup("");
-
-    // Allocate memory for the new string
-    char *new_str = malloc(len - 1); // len - 2 for the characters + 1 for the null terminator
+        return (ft_strdup(""));
+    new_str = malloc(len - 1);
     if (!new_str)
         return NULL;
-
-    // Copy the substring excluding the first and last characters
-    strncpy(new_str, str + 1, len - 2);
-    new_str[len - 2] = '\0'; // Null-terminate the new string
-
-	free((char *)str);
+    ft_strncpy(new_str, str + 1, len - 2);
+    new_str[len - 2] = '\0';
+	free(str);
     return new_str;
 }
 
@@ -162,18 +121,4 @@ t_token	*ft_tokenize(char *input, char **env)
 		
 	}
 	return (tokens);
-}
-
-void	free_tokens(t_token *tokens)
-{
-	t_token *temp;
-
-	while (tokens)
-	{
-		temp = tokens;
-		if (tokens->value)
-			free(tokens->value);
-		tokens = tokens->next;
-		free(temp);
-	}
 }
