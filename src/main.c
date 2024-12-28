@@ -12,8 +12,6 @@
 
 #include "../includes/minishell.h"
 
-// t_signal_data	g_signal_data;
-
 // flag: 127 on command not found
 // flag: 0 on no error
 // flag: 1 on error
