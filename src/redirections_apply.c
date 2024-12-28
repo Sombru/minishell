@@ -77,7 +77,6 @@ int	input_redirection(char *destination)
 		manage_exit_status(1);
 		return (-1);
 	}
-	// fflush(stdin);
 	manage_exit_status(0);
 	close(fd);
 	return (0);
