@@ -26,6 +26,7 @@ char	**reparse_args(char **args, int num_of_args)
             num_of_args--;
             args = ft_arrstr_rm(args, i, num_of_args);
             num_of_args--;
+			continue;
 		}
 		i++;
 	}
