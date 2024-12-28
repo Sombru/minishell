@@ -6,7 +6,7 @@ Minishell is a simple shell program written in C that mimics the basic functiona
 ### Built-in Functions
 - **echo**: Supports the `-n` option to suppress the trailing newline.
 - **cd**: Changes the current directory using relative or absolute paths.
-- **pwd**: Prints the current working directory (no options).
+- **pwd**: Prints the current working directory.
 - **pwd**: Prints the current working directory.
 - **export**: Sets environment variables.
 - **unset**: Unsets environment variables.
