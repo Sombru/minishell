@@ -6,7 +6,7 @@
 /*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/27 12:47:31 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/28 09:19:44 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ static int current_command(t_command *current, t_descriptor *descriptor, char **
     t_redirections  *redirections;
     int             redir_status;
     
+    redir_status = 0;
     redirections = find_redirections(current->arguemnts);
     if (redirections && ft_strcmp(redirections->type, HEREDOC) == 0)
         dup2(descriptor->original_fds[0], STDOUT_FILENO);

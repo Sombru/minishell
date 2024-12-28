@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 01:34:37 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/25 22:04:31 by pasha            ###   ########.fr       */
+/*   Updated: 2024/12/28 09:12:55 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,10 @@ char *handle_single_quotes(char **input)
 		(*input)++;
 	if (**input == '\'')
 	{
-		// Append the remaining part
 		temp = ft_strndup(start, *input - start);
 		res = ft_strjoin_free(res, temp);
-		(*input)++;	  // Move past the closing quote
-		return (res); // Return the string
+		(*input)++;
+		return (res);
 	}
 	else
 	{
@@ -75,14 +74,12 @@ char *handle_double_quotes(char **input, char **env)
 	{
 		if (**input == '$')
 		{
-			// Append the part before the variable
 			temp = ft_strndup(start, *input - start);
 			res = ft_strjoin_free(res, temp);
-			// Handle the variable
 			var_value = handle_var(input, env);
 			if (var_value)
 				res = ft_strjoin_free(res, var_value);
-			start = *input; // Update start to the new position
+			start = *input;
 		}
 		else
 		{
@@ -91,11 +88,10 @@ char *handle_double_quotes(char **input, char **env)
 	}
 	if (**input == '"')
 	{
-		// Append the remaining part
 		temp = ft_strndup(start, *input - start);
 		res = ft_strjoin_free(res, temp);
-		(*input)++;	  // Move past the closing quote
-		return (res); // Return the string
+		(*input)++;
+		return (res);
 	}
 	
 	else

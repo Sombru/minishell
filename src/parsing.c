@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 15:34:06 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/25 13:16:37 by pasha            ###   ########.fr       */
+/*   Updated: 2024/12/28 09:19:02 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ t_command *parse_tokens(t_token *tokens)
 	commands = NULL;
 	while (tokens)
 	{
-		args = malloc((MAX_ENV_SIZE) * sizeof * args);
+		args = malloc((count_tokens(tokens) + 1) * sizeof * args);
 		i = 0;
 		while (tokens && (tokens->type == TOKEN_STR || is_redirection_token(tokens->type)))
 		{

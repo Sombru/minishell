@@ -6,7 +6,7 @@
 /*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 14:53:27 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/27 14:54:22 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/28 09:16:31 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,4 +60,17 @@ void	free_tokens(t_token *tokens)
 		tokens = tokens->next;
 		free(temp);
 	}
+}
+
+int count_tokens(t_token *tokens)
+{
+	int count;
+
+	count = 0;
+	while (tokens)
+	{
+		count++;
+		tokens = tokens->next;
+	}
+	return (count);
 }

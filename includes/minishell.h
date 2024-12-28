@@ -6,7 +6,7 @@
 /*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2024/12/27 15:04:16 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/28 09:16:46 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,6 +190,7 @@ void			free_tokens(t_token *tokens);
 t_token			*create_token(t_token_var type, char *value);
 void			add_token(t_token **tokens, t_token *new_token);
 t_token			*create_token(t_token_var type, char *value);
+int 			count_tokens(t_token *tokens);
 
 char			*gather_word(char **input, char **env);
 	
