@@ -17,19 +17,20 @@ int	apply_redirections(t_redirections *redirections, char **env)
 	t_redirections	*current;
 
 	current = redirections;
+	int status = 0;
 	while (current)
 	{
 		if (ft_strcmp(current->type, STDIN) == 0)
-			return (input_redirection(current->destination));
+			status = input_redirection(current->destination);
 		else if (ft_strcmp(current->type, STDOUT) == 0)
-			return (output_redirection(current->destination));
+			status = output_redirection(current->destination);
 		else if (ft_strcmp(current->type, APPEND) == 0)
-			return (append_redirection(current->destination));
+			status = append_redirection(current->destination);
 		else if (ft_strcmp(current->type, HEREDOC) == 0)
-			return (heredoc_redirection(current->destination, env));
+			status = heredoc_redirection(current->destination, env);
 		current = current->next;
 	}
-	return (0);
+	return (status);
 }
 
 int	output_redirection(char *destination)
