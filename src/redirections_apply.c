@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections_apply.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 05:55:28 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/26 15:56:06 by pasha            ###   ########.fr       */
+/*   Updated: 2024/12/29 07:35:31 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ int	apply_redirections(t_redirections *redirections, char **env)
 	int status = 0;
 	while (current)
 	{
+		if (status == FAILURE)
+			return (FAILURE);
 		if (ft_strcmp(current->type, STDIN) == 0)
 			status = input_redirection(current->destination);
 		else if (ft_strcmp(current->type, STDOUT) == 0)
@@ -44,18 +46,18 @@ int	output_redirection(char *destination)
 	{
 		perror("minishell");
 		manage_exit_status(1);
-		return (-1);
+		return (FAILURE);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		perror("dup2");
 		close(fd);
 		manage_exit_status(1);
-		return (-1);
+		return (FAILURE);
 	}
 	manage_exit_status(0);
 	close(fd);
-	return (0);
+	return (SUCCESS);
 }
 
 int	input_redirection(char *destination)
@@ -69,18 +71,18 @@ int	input_redirection(char *destination)
 	{
 		perror("minishell");
 		manage_exit_status(1);
-		return (-1);
+		return (FAILURE);
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
 		perror("dup2");
 		close(fd);
 		manage_exit_status(1);
-		return (-1);
+		return (FAILURE);
 	}
 	manage_exit_status(0);
 	close(fd);
-	return (0);
+	return (SUCCESS);
 }
 
 int	append_redirection(char *destination)
@@ -94,18 +96,18 @@ int	append_redirection(char *destination)
 	{
 		perror("minishell");
 		manage_exit_status(1);
-		return (-1);
+		return (FAILURE);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		perror("dup2");
 		close(fd);
 		manage_exit_status(1);
-		return (-1);
+		return (FAILURE);
 	}
 	manage_exit_status(0);
 	close(fd);
-	return (0);
+	return (SUCCESS);
 }
 extern int	matching_mode;
 
@@ -142,7 +144,7 @@ int	heredoc_redirection(char *delimiter, char **env)
 		close(fd);
 		unlink(HEREDOC_TMP);
 		manage_exit_status(1);
-		return (-1);
+		return (FAILURE);
 	}
 	manage_exit_status(0);
 	close(fd);

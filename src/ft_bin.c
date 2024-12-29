@@ -3,14 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bin.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 05:02:57 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/25 22:00:34 by pasha            ###   ########.fr       */
+/*   Updated: 2024/12/29 08:57:51 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+static int command_not_found(char **args)
+{
+	char *tmp;
+
+	ft_putstr_fd(RED "minishell:" RST" command not found: "RED"`" , STDERR_FILENO);
+    tmp = ft_strjoin(args[0], "'\n"RST);
+	ft_putstr_fd(tmp, STDERR_FILENO);
+    free(tmp);
+	return (COMMAND_NOT_FOUND);
+}
 
 char *get_bin_path(char *command, char **env)
 {
@@ -19,6 +30,8 @@ char *get_bin_path(char *command, char **env)
     char *ret_path;
     int i;
 
+	if (DEBUG_MODE)
+		printf("DEBUG: commad: %s\n", command);
 	path_split = ft_split(ft_getenv("PATH", env), ':');
 	i = 0;
     while (path_split[i])
@@ -45,8 +58,6 @@ int	execute_bin_command(char **args, char **env)
 	pid_t		pid;
 
 	status = 0;
-	if (is_bin_command(args[0]) == false)
-		return (COMMAND_NOT_FOUND);
 	if (args[0][0] == '/')
 		path = ft_strdup(args[0]);
 	else
@@ -55,7 +66,8 @@ int	execute_bin_command(char **args, char **env)
 	if (pid == 0)
 	{
 		status = execve(path, args, env);
-		perror("execve");
+		// perror("execve"); // silenced since minishell has custom error messages
+		command_not_found(args);
 		free(path);
 		exit(FAILURE);
 	}
@@ -70,3 +82,4 @@ int	execute_bin_command(char **args, char **env)
 		return (FAILURE);
 	return (SUCCESS);
 }
+

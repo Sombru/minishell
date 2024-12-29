@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/02 11:34:40 by nspalevi          #+#    #+#             */
-/*   Updated: 2024/12/26 20:25:56 by pasha            ###   ########.fr       */
+/*   Updated: 2024/12/28 22:50:58 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,8 @@ int	main(int argc, char **argv, char **env_list)
 			continue ;
 		}
 		commands = parse_tokens(tokens);
-		// if (DEBUG_MODE)
-		// 	print_commands(commands);
+		if (DEBUG_MODE)
+			print_commands(commands);
 		if (tokens)
 		{
 			free_tokens(tokens);

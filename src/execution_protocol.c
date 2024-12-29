@@ -6,7 +6,7 @@
 /*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/28 09:19:44 by sombru           ###   ########.fr       */
+/*   Updated: 2024/12/29 08:56:38 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,8 @@ static int current_command(t_command *current, t_descriptor *descriptor, char **
         current->arguemnts = reparse_args(current->arguemnts, count_args(current->arguemnts));
         free_redirections(redirections);
     }
-    if (redir_status == -1)
-    {
-        perror("redirections");
+    if (redir_status == FAILURE)
         return (FAILURE);
-    }
     manage_exit_status(execute_command(current->arguemnts, env));
     dup2(descriptor->original_fds[0], STDIN_FILENO);
     dup2(descriptor->original_fds[1], STDOUT_FILENO);
@@ -85,21 +82,22 @@ int	execution_protocol(t_command *commands, char **env)
                 return (FAILURE);
             pid = fork();
             if (pid == 0)
-                handle_child(current, commands, descriptor, env);   
+                status = handle_child(current, commands, descriptor, env);   
             else if (pid > 0)
             {
                 signal(SIGINT, SIG_IGN);
                 waitpid(pid, &status, 0);
+                signal(SIGINT, handle_sigint);
                 handle_parent(descriptor);
                 current = current->next;
             }
-            else
-                return (FAILURE);
+            else if (status == FAILURE)
+                break ;
         }
         if (current)
         {
             if (current_command(current, descriptor, env) == FAILURE)
-                return (FAILURE);
+                break ;
             if (current->atribute == CMDOR && manage_exit_status(555) == 0)
                 return (SUCCESS);
             current = current->next;
@@ -113,8 +111,6 @@ int	execution_protocol(t_command *commands, char **env)
 
 int execute_command(char **args, char **env)
 {
-    char    *tmp;
-
     if (args[0] == NULL)
         return (SUCCESS);
 	else if (ft_strcmp(args[0], ECHO_CMD) == 0)
@@ -131,11 +127,6 @@ int execute_command(char **args, char **env)
 		return (ft_env(args, env));
 	else if (ft_strcmp(args[0], EXIT) == 0)
 		return (ft_exit(args, env));
-	else if (is_bin_command(args[0]))
-		return(execute_bin_command(args, env));
-	ft_putstr_fd(RED "minishell:" RST" command not found: "RED"`" , STDERR_FILENO);
-    tmp = ft_strjoin(args[0], "'\n"RST);
-	ft_putstr_fd(tmp, STDERR_FILENO);
-    free(tmp);
-	return (COMMAND_NOT_FOUND);
+    else
+        return (execute_bin_command(args, env));
 }
