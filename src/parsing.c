@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 15:34:06 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/28 09:19:02 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/03 13:23:09 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-t_command *create_command(char **args, t_atribute atribute)
+t_command	*create_command(char **args, t_atribute atribute)
 {
-	t_command *new_command;
+	t_command	*new_command;
 
 	new_command = malloc(sizeof(t_command));
 	if (!new_command)
@@ -24,9 +24,10 @@ t_command *create_command(char **args, t_atribute atribute)
 	new_command->next = NULL;
 	return (new_command);
 }
+
 void	add_command(t_command **commands, t_command *new_command)
 {
-	t_command *current;
+	t_command	*current;
 
 	if (!new_command)
 		return ;
@@ -41,10 +42,9 @@ void	add_command(t_command **commands, t_command *new_command)
 	current->next = new_command;
 }
 
-
-t_command *parse_tokens(t_token *tokens)
+t_command	*parse_tokens(t_token *tokens)
 {
-	t_command 	*commands;
+	t_command	*commands;
 	char		**args;
 	int			i;
 
@@ -53,7 +53,8 @@ t_command *parse_tokens(t_token *tokens)
 	{
 		args = malloc((count_tokens(tokens) + 1) * sizeof * args);
 		i = 0;
-		while (tokens && (tokens->type == TOKEN_STR || is_redirection_token(tokens->type)))
+		while (tokens && (tokens->type == TOKEN_STR
+				|| is_redirection_token(tokens->type)))
 		{
 			if (tokens->type == TOKEN_STDIN)
 			{
@@ -86,28 +87,27 @@ t_command *parse_tokens(t_token *tokens)
 			args[i] = NULL;
 			add_command(&commands, create_command(args, CMDAND));
 			tokens = tokens->next;
-			continue;
+			continue ;
 		}
 		if (tokens && tokens->type == TOKEN_CMDOR)
 		{
 			args[i] = NULL;
 			add_command(&commands, create_command(args, CMDOR));
 			tokens = tokens->next;
-			continue;
+			continue ;
 		}
 		if (tokens && tokens->type == TOKEN_PIPE)
 		{
 			args[i] = NULL;
 			add_command(&commands, create_command(args, CHILD));
 			tokens = tokens->next;
-			continue;
+			continue ;
 		}
-		args[i] = NULL;;
+		args[i] = NULL;
 		add_command(&commands, create_command(args, PARENT));
 		if (tokens)
 			tokens = tokens->next;
 	}
-
 	return (commands);
 }
 

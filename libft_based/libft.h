@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/16 11:34:30 by pkostura          #+#    #+#             */
-/*   Updated: 2024/12/25 22:39:58 by pasha            ###   ########.fr       */
+/*   Updated: 2025/01/03 14:02:08 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ char	*ft_strndup(const char *s, size_t n);
 
 // arrays
 
+int		ft_count_args(char **args);
 char	*ft_arrcomb(char **array, const char ch);
 char	**ft_arrcpy(char **array);
 char    **ft_arrstr_rm(char **array, int index, int size);

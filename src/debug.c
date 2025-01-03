@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debug.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:49:38 by nspalevi          #+#    #+#             */
-/*   Updated: 2024/12/27 11:04:32 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/03 13:04:30 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,19 +36,18 @@ void	print_tokens(t_token *tokens)
 
 void	print_commands(t_command *commands)
 {
-
 	while (commands)
 	{
 		print_args(commands->arguemnts);
 		printf("Command atribute is:");
-			if (commands->atribute == PARENT)
-				printf(" PARENT\n");
-			else if (commands->atribute == CHILD)
-				printf(" CHILD\n");
-			else if (commands->atribute == CMDOR)
-				printf(" CMDOR\n");
-			else if (commands->atribute == CMDAND)
-				printf(" CMDAND\n");
+		if (commands->atribute == PARENT)
+			printf(" PARENT\n");
+		else if (commands->atribute == CHILD)
+			printf(" CHILD\n");
+		else if (commands->atribute == CMDOR)
+			printf(" CMDOR\n");
+		else if (commands->atribute == CMDAND)
+			printf(" CMDAND\n");
 		commands = commands->next;
 	}
 }

@@ -26,7 +26,7 @@ SRC			= main.c \
 			  signals.c \
 			  tokenize.c t_gather_word.c t_wildcard.c t_utils.c \
 			  parsing.c \
-			  exe_child.c exe_parent.c\
+			  exe_pipes.c \
 			  quotes.c \
 			  var_utils.c \
 			  ft_bin.c \

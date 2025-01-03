@@ -6,7 +6,7 @@
 /*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2024/12/29 08:26:18 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/03 14:12:41 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,7 @@
 # define STDOUT "$%%$XXXXII>IIXXXX&%%$"
 # define APPEND "$%%$XXXXII>>IIXXXX&%%$"
 # define HEREDOC "$%%$XXXXII<<IIXXXX&%%$"
-# define SYNTAX_ERROR RED"minishell:"RST" syntax error near \
-unexpected token"RED" `%s'"RST"\n", tokens->value
+# define SYN_ERR RED "minishell:" RST " syntax error near unexpected token" RED
 # define COMMAND_NOT_FOUND 127
 # define SUCCESS 0
 # define FAILURE 1
@@ -67,11 +66,10 @@ typedef enum e_token_var // enum for token types
 	TOKEN_STDOUT, // 1 >
 	TOKEN_APPEND, // 2 >>
 	TOKEN_HEREDOC, // 3 <<
-	TOKEN_PIPE, // 4
+	TOKEN_PIPE, // 4 |
 	TOKEN_STR, // 5
-	TOKEN_LITERAL, // 6
-	TOKEN_CMDAND, // 7 &&
-	TOKEN_CMDOR, // 8 ||
+	TOKEN_CMDAND, // 6 &&
+	TOKEN_CMDOR, // 7 ||
 }							t_token_var;
 
 typedef struct s_token
@@ -86,7 +84,7 @@ typedef struct s_bin_cmd
 {
 	char					*name;
 	char					*path;
-}						t_bin_cmd;
+}							t_bin_cmd;
 
 typedef struct s_redirections
 {
@@ -101,130 +99,140 @@ typedef enum e_atribute
 	CHILD,
 	CMDOR,
 	CMDAND,
-}				t_atribute;
-
+}							t_atribute;
 
 typedef struct s_command
 {
-	char 					**arguemnts;
-	t_atribute 				atribute;
+	char					**arguemnts;
+	t_atribute				atribute;
 	struct s_redirections	*redirections;
 	struct s_command		*next;
 }							t_command;
 
 typedef struct s_descriptors
 {
-    int						original_fds[2];
+	int						original_fds[2];
 	int						pipefd[2];
-    int						prev_fd;
+	int						prev_fd;
 }							t_descriptor;
 
+extern int					g_matching_mode;
 
-extern int	matching_mode;
+// main
 
-//main
+int							manage_exit_status(int set_flag);
+void						free_environment(char **env);
 
-int				manage_exit_status(int set_flag);
-void			free_environment(char **env);
+// parsing
 
-//parsing
+t_command					*parse_tokens(t_token *tokens);
+void						add_command(t_command **commands,
+								t_command *new_command);
+t_command					*create_command(char **args, t_atribute atribute);
+void						free_commands(t_command *commands);
 
-t_command		*parse_tokens(t_token *tokens);
-void			add_command(t_command **commands, t_command *new_command);
-t_command		*create_command(char **args, t_atribute atribute);
-void			free_commands(t_command *commands);
+// redirections
 
-//redirections
+char						**reparse_args(char **args, int num_of_args);
+void						add_redirection(t_redirections **redirections,
+								t_redirections *new_redirection);
+t_redirections				*create_redirection(char *type, char *destination);
+t_redirections				*find_redirections(char **args);
+void						free_redirections(t_redirections *redirections);
 
-char			**reparse_args(char **args, int num_of_args);
-void			add_redirection(t_redirections **redirections, t_redirections *new_redirection);
-t_redirections	*create_redirection(char *type, char *destination);
-t_redirections	*find_redirections(char **args);
-void			free_redirections(t_redirections *redirections);
+int							apply_redirections(t_redirections *redirections,
+								char **env);
+int							output_redirection(char *destination);
+int							input_redirection(char *destination);
+int							append_redirection(char *destination);
+int							heredoc_redirection(char *delimiter, char **env);
 
-int				apply_redirections(t_redirections *redirections, char **env);
-int				output_redirection(char *destination);
-int				input_redirection(char *destination);
-int				append_redirection(char *destination);
-int				heredoc_redirection(char *delimiter, char **env);
+// input
 
-//input
+char						*display_prompt(void);
+int							is_valid_input(t_token *tokens);
 
-char			*display_prompt(void);
-int				is_valid_input(t_token *tokens);
+// env
 
-//env
+char						**store_environment(char **env);
+int							ft_setenv(char *name, char *value, char **env);
+char						*ft_getenv(const char *name, char **env);
 
-char			**store_environment(char **env);
-int				ft_setenv(char *name, char *value, char **env);
-char			*ft_getenv(const char *name, char **env);
+// execution_protocol
 
-//execution_protocol
+t_descriptor				*get_descriptors(void);
+int							execution_protocol(t_command *commands, char **env, t_descriptor *descriptor);
+int							current_command(t_command *current, t_descriptor *descriptor,
+								char **env);
+int							execute_command(char **args, char **env);
 
-t_descriptor 	*get_descriptors(void);
-int				execution_protocol(t_command *commands, char **env);
-int				execute_command(char **args, char **env);
+// bin
 
-//bin
+int							execute_bin_command(char **args, char **env);
 
-int				execute_bin_command(char **args, char **env);
+// pipes
 
-//pipes
+int							handle_pipes(t_command *current, t_command *commands,
+								t_descriptor *descriptor, char **env);
 
-int 			handle_child(t_command *current, t_command *commands, t_descriptor *descriptor, char **env);
-int				handle_parent(t_descriptor *descriptor);
-//commands
+int							handle_child(t_command *current,
+								t_command *commands, t_descriptor *descriptor,
+								char **env);
+int							handle_parent(t_descriptor *descriptor);
 
-int				ft_cd(char **args, char **env);
-int				ft_echo(char **args);
-int				ft_pwd(char **args);
-int				ft_export(char **args, char **env);
-int				ft_unset(char **args, char **env);
-int				ft_env(char **args, char **env);
-int				ft_exit(char **args, char **env);
 
-//tokenization
+// commands
 
-t_token			*ft_tokenize(char *input, char **env);
-void			free_tokens(t_token *tokens);
-t_token			*create_token(t_token_var type, char *value);
-void			add_token(t_token **tokens, t_token *new_token);
-t_token			*create_token(t_token_var type, char *value);
-int 			count_tokens(t_token *tokens);
+int							ft_cd(char **args, char **env);
+int							ft_echo(char **args);
+int							ft_pwd(char **args);
+int							ft_export(char **args, char **env);
+int							ft_unset(char **args, char **env);
+int							ft_env(char **args, char **env);
+int							ft_exit(char **args, char **env);
 
-char			*gather_word(char **input, char **env);
-	
-char			*handle_wildcard_expansion(char *input);
+// tokenization
 
-//bools
+t_token						*ft_tokenize(char *input, char **env);
+void						free_tokens(t_token *tokens);
+t_token						*create_token(t_token_var type, char *value);
+void						add_token(t_token **tokens, t_token *new_token);
+t_token						*create_token(t_token_var type, char *value);
+int							count_tokens(t_token *tokens);
 
-bool			is_special_token(int token);
-bool			is_redirection_token(int token);
-bool			is_bin_command(char *command);
-bool			is_output_redirection(t_redirections *redirections);
-bool			is_input_redirection(t_redirections *redirections);
+char						*gather_word(char **input, char **env);
 
-//debug
+char						*handle_wildcard_expansion(char *input);
 
-void			print_args(char **args);
-void			print_tokens(t_token *tokens);
-void			print_commands(t_command *commands);
+// bools
 
-//signals
+bool						is_special_token(int token);
+bool						is_redirection_token(int token);
+bool						is_bin_command(char *command);
+bool						is_output_redirection(t_redirections *redirections);
+bool						is_input_redirection(t_redirections *redirections);
 
-void			handle_signals(void);
-void			handle_sigquit(int sig);
-void			handle_sigint(int sig);
-void			sigint_matching(int sig);
+// debug
 
-//quotes
+void						print_args(char **args);
+void						print_tokens(t_token *tokens);
+void						print_commands(t_command *commands);
 
-char			*handle_single_quotes(char **input);
-char			*handle_double_quotes(char **input, char **env);
+// signals
 
-//var_utils
+void						handle_signals(void);
+void						handle_sigquit(int sig);
+void						handle_sigint(int sig);
+void						sigint_matching(int sig);
 
-char			*handle_var(char **input, char **env);
-char 			*handle_var_heredoc(char **buffer, char **env);
+// quotes
+
+char						*handle_single_quotes(char **input);
+char						*handle_double_quotes(char **input, char **env);
+
+// var_utils
+
+char						*handle_var(char **input, char **env);
+char						*handle_var_heredoc(char **buffer, char **env);
 
 #endif
