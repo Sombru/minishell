@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 00:02:42 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/29 09:26:02 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/03 13:24:23 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-extern int matching_mode;
+extern int	g_matching_mode;
 
-static char *sigint_promt(void)
+static char	*sigint_promt(void)
 {
 	char	*prompt;
 	char	*exit_status;
@@ -25,7 +25,7 @@ static char *sigint_promt(void)
 		colored_status = ft_strjoin(G, exit_status);
 	else
 		colored_status = ft_strjoin(RED, exit_status);
-	prompt = ft_strjoin(colored_status, C" minishell$> "RST);
+	prompt = ft_strjoin(colored_status, C " minishell$> " RST);
 	free(exit_status);
 	free(colored_status);
 	return (prompt);
@@ -33,14 +33,14 @@ static char *sigint_promt(void)
 
 void	handle_sigint(int sig)
 {
-	(void)sig;
 	char	*tmp;
 
-	if (matching_mode)
+	(void)sig;
+	if (g_matching_mode)
 	{
-		matching_mode = 0;
+		g_matching_mode = 0;
 		write(STDOUT_FILENO, "\n", 1);
-		rl_done = 1; // Forces readline() to return NULL
+		rl_done = 1;
 		tmp = sigint_promt();
 		write(STDERR_FILENO, tmp, ft_strlen(tmp));
 		free(tmp);
@@ -63,4 +63,3 @@ void	handle_signals(void)
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, handle_sigquit);
 }
-

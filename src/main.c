@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/02 11:34:40 by nspalevi          #+#    #+#             */
-/*   Updated: 2024/12/28 22:50:58 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/03 13:12:24 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static void	handle_input_null(char *input, char **env)
 	}
 }
 
-int matching_mode = 0;
+int			g_matching_mode = 0;
 
 int	main(int argc, char **argv, char **env_list)
 {
@@ -73,8 +73,6 @@ int	main(int argc, char **argv, char **env_list)
 		if (input == NULL)
 			handle_input_null(input, env);
 		tokens = ft_tokenize(input, env);
-		// if (DEBUG_MODE)
-		// 	print_tokens(tokens);
 		if (tokens && is_valid_input(tokens))
 		{
 			free_tokens(tokens);
@@ -97,5 +95,3 @@ int	main(int argc, char **argv, char **env_list)
 	}
 	return (0);
 }
-
-

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections_apply.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 05:55:28 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/29 07:35:31 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/03 13:23:33 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,10 @@
 int	apply_redirections(t_redirections *redirections, char **env)
 {
 	t_redirections	*current;
+	int				status;
 
 	current = redirections;
-	int status = 0;
+	status = 0;
 	while (current)
 	{
 		if (status == FAILURE)
@@ -109,7 +110,7 @@ int	append_redirection(char *destination)
 	close(fd);
 	return (SUCCESS);
 }
-extern int	matching_mode;
+extern int	g_matching_mode;
 
 int	heredoc_redirection(char *delimiter, char **env)
 {
@@ -121,25 +122,25 @@ int	heredoc_redirection(char *delimiter, char **env)
 	if (DEBUG_MODE)
 		printf("DEBUG: heredoc redirection\n");
 	fd = open(HEREDOC_TMP, O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	matching_mode = 1;
-    while (matching_mode != 0)
-    {
-        buffer = readline("heredoc> ");
-        if (!buffer || !matching_mode) // CTRL+D or read error
-            break;
-        if (ft_strcmp(buffer, delimiter) == 0)
-        {
-            free(buffer);
-            break;
-        }
+	g_matching_mode = 1;
+	while (g_matching_mode != 0)
+	{
+		buffer = readline("heredoc> ");
+		if (!buffer || !g_matching_mode)
+			break ;
+		if (ft_strcmp(buffer, delimiter) == 0)
+		{
+			free(buffer);
+			break ;
+		}
 		result = buffer;
-        expanded = handle_var_heredoc(&buffer, env);
+		expanded = handle_var_heredoc(&buffer, env);
 		write(fd, expanded, ft_strlen(expanded));
 		write(fd, "\n", 1);
 		free(expanded);
 		free(result);
-    }
-	if (!matching_mode)
+	}
+	if (!g_matching_mode)
 	{
 		close(fd);
 		unlink(HEREDOC_TMP);

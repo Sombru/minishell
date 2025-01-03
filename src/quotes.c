@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 01:34:37 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/28 09:12:55 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/03 13:23:15 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-extern int matching_mode;
+extern int	g_matching_mode;
 
-char *handle_single_quotes(char **input)
+char	*handle_single_quotes(char **input)
 {
-	char 	*start;
-	char 	*res;
-	char 	*buffer;
+	char	*start;
+	char	*res;
+	char	*buffer;
 	char	*temp;
 
 	(*input)++;
@@ -35,22 +35,22 @@ char *handle_single_quotes(char **input)
 	}
 	else
 	{
-		matching_mode = 1;
+		g_matching_mode = 1;
 		printf("quote> ");
 		buffer = ft_strjoin(start, readline(""));
-		while (buffer && matching_mode)
+		while (buffer && g_matching_mode)
 		{
 			res = ft_strjoin(res, "\n");
 			res = ft_strjoin(res, buffer);
 			if (ft_strchr(buffer, '\''))
 			{
 				res = ft_remove_last_char(res, '\'');
-				break;
-			}				
+				break ;
+			}
 			printf("quote> ");
 			buffer = readline("");
 		}
-		if (!buffer || !matching_mode)
+		if (!buffer || !g_matching_mode)
 		{
 			free(res);
 			return (NULL);
@@ -59,13 +59,13 @@ char *handle_single_quotes(char **input)
 	return (res);
 }
 
-char *handle_double_quotes(char **input, char **env)
+char	*handle_double_quotes(char **input, char **env)
 {
-	char *start;
-	char *res;
-	char *temp;
-	char *var_value;
-	char *buffer;
+	char	*start;
+	char	*res;
+	char	*temp;
+	char	*var_value;
+	char	*buffer;
 
 	(*input)++;
 	start = *input;
@@ -93,27 +93,24 @@ char *handle_double_quotes(char **input, char **env)
 		(*input)++;
 		return (res);
 	}
-	
 	else
 	{
-		matching_mode = 1;
+		g_matching_mode = 1;
 		printf("dquote> ");
 		buffer = ft_strjoin(start, readline(""));
-		while (buffer && matching_mode)
+		while (buffer && g_matching_mode)
 		{
-	
 			res = ft_strjoin(res, "\n");
 			res = ft_strjoin(res, buffer);
 			if (ft_strchr(buffer, '"'))
 			{
 				res = ft_remove_last_char(res, '"');
-				break;
+				break ;
 			}
-			
 			printf("dquote> ");
 			buffer = readline("");
 		}
-		if (!buffer || !matching_mode)
+		if (!buffer || !g_matching_mode)
 		{
 			free(res);
 			return (NULL);

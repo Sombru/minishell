@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   t_wildcard.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 02:13:52 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/25 22:44:01 by pasha            ###   ########.fr       */
+/*   Updated: 2025/01/03 13:25:41 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ static char	**free_files_and_return_null(char **files, int count)
 	return (NULL);
 }
 
-static int	match_pattern(const char *filename, const char *start, const char *end)
+static int	match_pattern(const char *filename, const char *start,
+		const char *end)
 {
 	size_t	start_len;
 	size_t	end_len;
@@ -44,7 +45,6 @@ static int	match_pattern(const char *filename, const char *start, const char *en
 	return (1);
 }
 
-
 static char	**collect_files(DIR *dir, const char *start, const char *end)
 {
 	struct dirent	*entry;
@@ -58,10 +58,10 @@ static char	**collect_files(DIR *dir, const char *start, const char *end)
 	{
 		if (entry->d_name[0] != '.' && match_pattern(entry->d_name, start, end))
 		{
-			files = ft_realloc(files, sizeof(char *) * count, sizeof(char *) * (count + 2));
+			files = ft_realloc(files, sizeof(char *) * count, sizeof(char *)
+					* (count + 2));
 			if (!files)
 				return (NULL);
-
 			files[count] = ft_strdup(entry->d_name);
 			if (!files[count])
 				return (free_files_and_return_null(files, count));
@@ -95,6 +95,7 @@ static char	*get_directory_contents(char *start, char *end)
 	ft_free_array(files);
 	return (result);
 }
+
 char	*handle_wildcard_expansion(char *word)
 {
 	char	**pattern;

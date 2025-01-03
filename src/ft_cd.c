@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:01:12 by pkostura          #+#    #+#             */
-/*   Updated: 2024/12/24 19:08:15 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/03 13:09:29 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-#include <limits.h>
 
 int	ft_cd(char **args, char **env)
 {

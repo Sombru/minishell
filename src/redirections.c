@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 04:46:08 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/25 17:35:27 by pasha            ###   ########.fr       */
+/*   Updated: 2025/01/03 13:23:58 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,28 @@
 
 char	**reparse_args(char **args, int num_of_args)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < num_of_args)
 	{
 		if (ft_strcmp(args[i], STDIN) == 0 || ft_strcmp(args[i], STDOUT) == 0
-			|| ft_strcmp(args[i], APPEND) == 0 || ft_strcmp(args[i], HEREDOC) == 0)
+			|| ft_strcmp(args[i], APPEND) == 0 || ft_strcmp(args[i],
+				HEREDOC) == 0)
 		{
 			args = ft_arrstr_rm(args, i, num_of_args);
-            num_of_args--;
-            args = ft_arrstr_rm(args, i, num_of_args);
-            num_of_args--;
-			continue;
+			num_of_args--;
+			args = ft_arrstr_rm(args, i, num_of_args);
+			num_of_args--;
+			continue ;
 		}
 		i++;
 	}
 	return (args);
 }
 
-void	add_redirection(t_redirections **redirections, t_redirections *new_redirection)
+void	add_redirection(t_redirections **redirections,
+		t_redirections *new_redirection)
 {
 	t_redirections	*current;
 
@@ -74,21 +76,21 @@ t_redirections	*find_redirections(char **args)
 	i = 0;
 	while (args[i])
 	{
-		if (ft_strcmp(args[i], STDIN) == 0
-		|| ft_strcmp(args[i], STDOUT) == 0
-		|| ft_strcmp(args[i], APPEND) == 0
-		|| ft_strcmp(args[i], HEREDOC) == 0)
+		if (ft_strcmp(args[i], STDIN) == 0 || ft_strcmp(args[i], STDOUT) == 0
+			|| ft_strcmp(args[i], APPEND) == 0 || ft_strcmp(args[i],
+				HEREDOC) == 0)
 		{
 			type = ft_strdup(args[i]);
 			destination = ft_strdup(args[i + 1]);
-			add_redirection(&redirections, create_redirection(type, destination));
+			add_redirection(&redirections, create_redirection(type,
+					destination));
 			i++;
 		}
 		i++;
 	}
 	return (redirections);
-	
 }
+
 void	free_redirections(t_redirections *redirections)
 {
 	t_redirections	*current;

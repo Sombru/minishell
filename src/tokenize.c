@@ -3,46 +3,47 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 23:44:49 by sombru            #+#    #+#             */
-/*   Updated: 2024/12/28 09:16:25 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/03 13:25:53 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static bool is_first_and_last_char(const char *str, char ch)
+static bool	is_first_and_last_char(const char *str, char ch)
 {
-    if (!str || ft_strlen(str) <= 1)
-        return false;
+	size_t	len;
 
-    size_t len = ft_strlen(str);
-    return (str[0] == ch && str[len - 1] == ch);
+	if (!str || ft_strlen(str) <= 1)
+		return (false);
+	len = ft_strlen(str);
+	return (str[0] == ch && str[len - 1] == ch);
 }
 
-static char *remove_first_and_last_char(char *str)
+static char	*remove_first_and_last_char(char *str)
 {
-    size_t	len;
+	size_t	len;
 	char	*new_str;
 
 	len = ft_strlen(str);
-    if (len <= 2)
-        return (ft_strdup(""));
-    new_str = malloc(len - 1);
-    if (!new_str)
-        return NULL;
-    ft_strncpy(new_str, str + 1, len - 2);
-    new_str[len - 2] = '\0';
+	if (len <= 2)
+		return (ft_strdup(""));
+	new_str = malloc(len - 1);
+	if (!new_str)
+		return (NULL);
+	ft_strncpy(new_str, str + 1, len - 2);
+	new_str[len - 2] = '\0';
 	free(str);
-    return new_str;
+	return (new_str);
 }
 
 t_token	*ft_tokenize(char *input, char **env)
 {
 	t_token	*tokens;
 	char	*str;
-	char 	**expanded;
+	char	**expanded;
 	int		i;
 
 	tokens = NULL;
@@ -106,7 +107,8 @@ t_token	*ft_tokenize(char *input, char **env)
 					i = 0;
 					while (expanded[i] != NULL)
 					{
-						add_token(&tokens, create_token(TOKEN_STR, expanded[i]));
+						add_token(&tokens, create_token(TOKEN_STR,
+								expanded[i]));
 						i++;
 					}
 					ft_free_array(expanded);
@@ -117,8 +119,7 @@ t_token	*ft_tokenize(char *input, char **env)
 			}
 			else
 				free(str);
-		}		
-		
+		}
 	}
 	return (tokens);
 }
