@@ -25,8 +25,8 @@ SRC			= main.c \
 			  redirections.c redirections_apply.c \
 			  signals.c \
 			  tokenize.c t_gather_word.c t_wildcard.c t_utils.c \
-			  parsing.c \
-			  exe_child.c exe_parent.c\
+			  parsing.c p_utils.c \
+			  exe_pipes.c \
 			  quotes.c \
 			  var_utils.c \
 			  ft_bin.c \

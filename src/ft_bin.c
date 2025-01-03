@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bin.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 05:02:57 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/03 13:09:19 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/03 16:34:22 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,14 +63,11 @@ int	execute_bin_command(char **args, char **env)
 		path = ft_strdup(args[0]);
 	else
 		path = get_bin_path(args[0], env);
+	if (path == NULL)
+		return (command_not_found(args));
 	pid = fork();
 	if (pid == 0)
-	{
 		status = execve(path, args, env);
-		command_not_found(args);
-		free(path);
-		exit(FAILURE);
-	}
 	else if (pid > 0)
 	{
 		signal(SIGINT, SIG_IGN);

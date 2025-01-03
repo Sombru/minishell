@@ -3,23 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   execution_protocol.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/03 13:10:47 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/03 16:42:11 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int	count_args(char **args)
+static void	free_descriptor(t_descriptor *descriptor)
 {
-	int	count;
-
-	count = 0;
-	while (args[count])
-		count++;
-	return (count);
+	close(descriptor->original_fds[0]);
+	close(descriptor->original_fds[1]);
+	free(descriptor);
 }
 
 t_descriptor	*get_descriptors(void)
@@ -38,7 +35,35 @@ t_descriptor	*get_descriptors(void)
 	return (descriptor);
 }
 
-static int	current_command(t_command *current, t_descriptor *descriptor,
+int	execution_protocol(t_command *commands, char **env, t_descriptor *descriptor)
+{
+	t_command		*current;
+	int				status;
+
+	current = commands;
+	while (current)
+	{
+		while (current && current->atribute == CHILD)
+		{
+			status = handle_pipes(current, commands, descriptor, env);
+			if (status == FAILURE)
+				break ;
+			current = current->next;
+		}
+		if (current)
+		{
+			if (current_command(current, descriptor, env) == FAILURE)
+				break ;
+			if (current->atribute == CMDOR && manage_exit_status(555) == 0)
+				break ;
+			current = current->next;
+		}
+	}
+	free_descriptor(descriptor);
+	return (SUCCESS);
+}
+
+int	current_command(t_command *current, t_descriptor *descriptor,
 		char **env)
 {
 	t_redirections	*redirections;
@@ -50,12 +75,11 @@ static int	current_command(t_command *current, t_descriptor *descriptor,
 		dup2(descriptor->original_fds[0], STDOUT_FILENO);
 	else
 		dup2(descriptor->prev_fd, STDIN_FILENO);
-	close(descriptor->prev_fd);
 	if (redirections)
 	{
 		redir_status = apply_redirections(redirections, env);
 		current->arguemnts = reparse_args(current->arguemnts,
-				count_args(current->arguemnts));
+				ft_count_args(current->arguemnts));
 		free_redirections(redirections);
 	}
 	if (redir_status == FAILURE)
@@ -63,50 +87,6 @@ static int	current_command(t_command *current, t_descriptor *descriptor,
 	manage_exit_status(execute_command(current->arguemnts, env));
 	dup2(descriptor->original_fds[0], STDIN_FILENO);
 	dup2(descriptor->original_fds[1], STDOUT_FILENO);
-	return (SUCCESS);
-}
-
-int	execution_protocol(t_command *commands, char **env)
-{
-	t_command		*current;
-	t_descriptor	*descriptor;
-	pid_t			pid;
-	int				status;
-
-	current = commands;
-	descriptor = get_descriptors();
-	while (current)
-	{
-		while (current && current->atribute == CHILD)
-		{
-			if (pipe(descriptor->pipefd) == -1)
-				return (FAILURE);
-			pid = fork();
-			if (pid == 0)
-				status = handle_child(current, commands, descriptor, env);
-			else if (pid > 0)
-			{
-				signal(SIGINT, SIG_IGN);
-				waitpid(pid, &status, 0);
-				signal(SIGINT, handle_sigint);
-				handle_parent(descriptor);
-				current = current->next;
-			}
-			else if (status == FAILURE)
-				break ;
-		}
-		if (current)
-		{
-			if (current_command(current, descriptor, env) == FAILURE)
-				break ;
-			if (current->atribute == CMDOR && manage_exit_status(555) == 0)
-				return (SUCCESS);
-			current = current->next;
-		}
-	}
-	close(descriptor->original_fds[0]);
-	close(descriptor->original_fds[1]);
-	free(descriptor);
 	return (SUCCESS);
 }
 

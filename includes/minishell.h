@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/03 13:27:50 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/03 16:04:09 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,9 @@ char						*ft_getenv(const char *name, char **env);
 // execution_protocol
 
 t_descriptor				*get_descriptors(void);
-int							execution_protocol(t_command *commands, char **env);
+int							execution_protocol(t_command *commands, char **env, t_descriptor *descriptor);
+int							current_command(t_command *current, t_descriptor *descriptor,
+								char **env);
 int							execute_command(char **args, char **env);
 
 // bin
@@ -170,10 +172,15 @@ int							execute_bin_command(char **args, char **env);
 
 // pipes
 
+int							handle_pipes(t_command *current, t_command *commands,
+								t_descriptor *descriptor, char **env);
+
 int							handle_child(t_command *current,
 								t_command *commands, t_descriptor *descriptor,
 								char **env);
 int							handle_parent(t_descriptor *descriptor);
+
+
 // commands
 
 int							ft_cd(char **args, char **env);
