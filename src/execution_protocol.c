@@ -6,7 +6,7 @@
 /*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/03 14:13:42 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/04 05:15:01 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ int	current_command(t_command *current, t_descriptor *descriptor,
 		dup2(descriptor->original_fds[0], STDOUT_FILENO);
 	else
 		dup2(descriptor->prev_fd, STDIN_FILENO);
-	close(descriptor->prev_fd);
 	if (redirections)
 	{
 		redir_status = apply_redirections(redirections, env);
