@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ft_remove_last_char.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkostura < pkostura@student.42prague.co    +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 16:00:29 by pkostura          #+#    #+#             */
-/*   Updated: 2024/12/07 16:43:50 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/09 11:53:00 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
 // removes last occurance of char ch from the string
-char	*ft_remove_last_char(const char *str, char ch)
+char	*ft_remove_last_char(char *str, char ch)
 {
 	char	*last_occurrence;
 	char	*result ;
@@ -32,5 +32,6 @@ char	*ft_remove_last_char(const char *str, char ch)
 	prefix_length = last_occurrence - str;
 	ft_strncpy(result, str, prefix_length);
 	ft_strcpy(result + prefix_length, last_occurrence + 1);
+	free(str);
 	return (result);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bin.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 05:02:57 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/03 14:36:24 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/09 19:25:49 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ char	*get_bin_path(char *command, char **env)
 	char	*ret_path;
 	int		i;
 
-	if (DEBUG_MODE)
-		printf("DEBUG: commad: %s\n", command);
+	if (ft_getenv("PATH", env) == NULL)
+		return (NULL);
 	path_split = ft_split(ft_getenv("PATH", env), ':');
 	i = 0;
 	while (path_split[i])

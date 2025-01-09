@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   t_wildcard.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 02:13:52 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/03 13:25:41 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/09 18:47:22 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,11 +105,9 @@ char	*handle_wildcard_expansion(char *word)
 	pattern = ft_split(word, '*');
 	if (pattern[0] == NULL)
 	{
-		free(word);
-		free(pattern);
 		expanded = get_directory_contents("", "");
 		expanded = ft_stradd_start_end(expanded, 31);
-		return (expanded);
+		return (free(word), free(pattern), expanded);
 	}
 	wildcard = word;
 	wildcard = ft_strchr(wildcard, '*') + 1;
@@ -121,10 +119,8 @@ char	*handle_wildcard_expansion(char *word)
 		pattern[2] = NULL;
 	}
 	expanded = get_directory_contents(pattern[0], pattern[1]);
-	free(word);
-	ft_free_array(pattern);
 	if (expanded == NULL)
-		return (NULL);
+		return (ft_free_array(pattern), free(word), NULL);
 	expanded = ft_stradd_start_end(expanded, 31);
-	return (expanded);
+	return (ft_free_array(pattern), free(word), expanded);
 }

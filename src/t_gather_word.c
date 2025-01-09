@@ -3,53 +3,96 @@
 /*                                                        :::      ::::::::   */
 /*   t_gather_word.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/21 01:33:07 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/03 13:25:19 by nspalevi         ###   ########.fr       */
+/*   Created: 2025/01/09 16:53:35 by pkostura          #+#    #+#             */
+/*   Updated: 2025/01/09 19:35:06 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
+static char	*handle_wildcard(char **input, char *word)
+{
+	char	*wildcard;
+	char	tmp[2];
+
+	wildcard = handle_wildcard_expansion(ft_strdup(word));
+	if (!wildcard)
+	{
+		if (**input != '\0')
+		{
+			tmp[0] = **input;
+			tmp[1] = '\0';
+			word = ft_strjoin_free(word, ft_strdup(tmp));
+			(*input)++;
+		}
+	}
+	else
+	{
+		free(word);
+		return (wildcard);
+	}
+	return (word);
+}
+
+static char	*handle_quotes(char **input, char **env, char *word,
+		int *quotes_flag)
+{
+	char	*part;
+
+	if (**input == '\'')
+	{
+		*quotes_flag = 1;
+		part = handle_single_quotes(input);
+		if (!part)
+			return (free(word), NULL);
+		word = ft_strjoin_free(word, part);
+	}
+	else if (**input == '"')
+	{
+		*quotes_flag = 1;
+		part = handle_double_quotes(input, env);
+		if (!part)
+			return (free(word), NULL);
+		word = ft_strjoin_free(word, part);
+	}
+	return (word);
+}
+
+static char	*handle_special_characters(char **input, char **env, char *word,
+		int *quotes_flag)
+{
+	char	*var;
+
+	word = handle_quotes(input, env, word, quotes_flag);
+	if (!word)
+		return (NULL);
+	if (**input == '$')
+	{
+		var = handle_var(input, env);
+		if (!var || !ft_strcmp(var, ""))
+			return (free(word), NULL);
+		word = ft_strjoin_free(word, var);
+	}
+	return (word);
+}
+
 char	*gather_word(char **input, char **env)
 {
 	char	*word;
 	char	tmp[2];
-	char	*var;
 	int		quotes_flag;
-	char	*wildcard;
-	char	*part;
 
 	word = ft_strdup("");
 	quotes_flag = 0;
-	while (**input && !isspace(**input) && **input != '|' && **input != '>'
+	while (**input && !ft_isspace(**input) && **input != '|' && **input != '>'
 		&& **input != '<' && (**input != '&' || *(*input + 1) != '&'))
 	{
-		if (**input == '\'')
-		{
-			quotes_flag = 1;
-			part = handle_single_quotes(input);
-			if (!part)
-				return (free(word), NULL);
-			word = ft_strjoin_free(word, part);
-		}
-		else if (**input == '"')
-		{
-			quotes_flag = 1;
-			part = handle_double_quotes(input, env);
-			if (!part)
-				return (free(word), NULL);
-			word = ft_strjoin_free(word, part);
-		}
-		else if (**input == '$')
-		{
-			var = handle_var(input, env);
-			if (!var || !ft_strcmp(var, ""))
-				return (free(word), NULL);
-			word = ft_strjoin_free(word, var);
-		}
-		else
+		word = handle_special_characters(input, env, word, &quotes_flag);
+		if (!word)
+			return (NULL);
+		if (**input && **input != '\'' && **input != '"' && **input != '$')
 		{
 			tmp[0] = **input;
 			tmp[1] = '\0';
@@ -58,23 +101,6 @@ char	*gather_word(char **input, char **env)
 		}
 	}
 	if (!quotes_flag && ft_strchr(word, '*'))
-	{
-		wildcard = handle_wildcard_expansion(ft_strdup(word));
-		if (!wildcard)
-		{
-			if (**input != '\0')
-			{
-				tmp[0] = **input;
-				tmp[1] = '\0';
-				word = ft_strjoin_free(word, ft_strdup(tmp));
-				(*input)++;
-			}
-		}
-		else
-		{
-			free(word);
-			return (wildcard);
-		}
-	}
+		word = handle_wildcard(input, word);
 	return (word);
 }

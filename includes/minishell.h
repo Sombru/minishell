@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/03 14:12:41 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/09 18:59:41 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@
 # define STDOUT "$%%$XXXXII>IIXXXX&%%$"
 # define APPEND "$%%$XXXXII>>IIXXXX&%%$"
 # define HEREDOC "$%%$XXXXII<<IIXXXX&%%$"
-# define SYN_ERR RED "minishell:" RST " syntax error near unexpected token" RED
+# define PROMT "minishell: "
+# define SYNTAX_ERR "syntax error near unexpected token"
 # define COMMAND_NOT_FOUND 127
 # define SUCCESS 0
 # define FAILURE 1
@@ -161,9 +162,10 @@ char						*ft_getenv(const char *name, char **env);
 // execution_protocol
 
 t_descriptor				*get_descriptors(void);
-int							execution_protocol(t_command *commands, char **env, t_descriptor *descriptor);
-int							current_command(t_command *current, t_descriptor *descriptor,
-								char **env);
+int							execution_protocol(t_command *commands, char **env,
+								t_descriptor *descriptor);
+int							current_command(t_command *current,
+								t_descriptor *descriptor, char **env);
 int							execute_command(char **args, char **env);
 
 // bin
@@ -172,14 +174,14 @@ int							execute_bin_command(char **args, char **env);
 
 // pipes
 
-int							handle_pipes(t_command *current, t_command *commands,
-								t_descriptor *descriptor, char **env);
+int							handle_pipes(t_command *current,
+								t_command *commands, t_descriptor *descriptor,
+								char **env);
 
 int							handle_child(t_command *current,
 								t_command *commands, t_descriptor *descriptor,
 								char **env);
 int							handle_parent(t_descriptor *descriptor);
-
 
 // commands
 
@@ -211,6 +213,7 @@ bool						is_redirection_token(int token);
 bool						is_bin_command(char *command);
 bool						is_output_redirection(t_redirections *redirections);
 bool						is_input_redirection(t_redirections *redirections);
+bool						is_first_and_last_char(const char *str, char ch);
 
 // debug
 
@@ -223,12 +226,16 @@ void						print_commands(t_command *commands);
 void						handle_signals(void);
 void						handle_sigquit(int sig);
 void						handle_sigint(int sig);
-void						sigint_matching(int sig);
 
 // quotes
 
 char						*handle_single_quotes(char **input);
+char						*handle_unmatched_single_quotes(char *start);
 char						*handle_double_quotes(char **input, char **env);
+char						*handle_double_quotes_var(char **input, char **env,
+								char *res);
+char						*handle_unmatched_double_quotes(char *start,
+								char **env);
 
 // var_utils
 

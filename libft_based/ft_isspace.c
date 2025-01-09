@@ -1,24 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_free_array.c                                    :+:      :+:    :+:   */
+/*   ft_isspace.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/25 16:07:29 by pasha             #+#    #+#             */
-/*   Updated: 2025/01/09 18:38:52 by pkostura         ###   ########.fr       */
+/*   Created: 2025/01/09 19:32:31 by pkostura          #+#    #+#             */
+/*   Updated: 2025/01/09 19:32:47 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-// Frees the array of strings and all its elements
-void	ft_free_array(char **arr)
+// checks if the character is a space character
+int	ft_isspace(int c)
 {
-	int	i;
-
-	i = 0;
-	while (arr && arr[i])
-		free(arr[i++]);
-	free(arr);
+	if (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f'
+		|| c == '\r')
+		return (1);
+	return (0);
 }

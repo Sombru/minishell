@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pasha <pasha@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:11:55 by pkostura          #+#    #+#             */
-/*   Updated: 2024/12/26 20:26:09 by pasha            ###   ########.fr       */
+/*   Updated: 2025/01/09 19:05:53 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	ft_exit(char **args, char **env)
 	exit_code = manage_exit_status(555);
 	if (handle_exit_arguments(args, &exit_code))
 		return (FAILURE);
-	printf("%d\n", exit_code);
+	printf("terminated with status: %d\n", exit_code);
 	ft_free_array(args);
 	ft_free_array(env);
 	rl_clear_history();

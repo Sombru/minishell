@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execution_protocol.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/04 05:15:01 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/09 11:23:02 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
 
 t_descriptor	*get_descriptors(void)
 {
@@ -36,10 +35,11 @@ static void	free_descriptor(t_descriptor *descriptor)
 	free(descriptor);
 }
 
-int	execution_protocol(t_command *commands, char **env, t_descriptor *descriptor)
+int	execution_protocol(t_command *commands, char **env,
+		t_descriptor *descriptor)
 {
-	t_command		*current;
-	int				status;
+	t_command	*current;
+	int			status;
 
 	current = commands;
 	while (current)
@@ -64,8 +64,7 @@ int	execution_protocol(t_command *commands, char **env, t_descriptor *descriptor
 	return (SUCCESS);
 }
 
-int	current_command(t_command *current, t_descriptor *descriptor,
-		char **env)
+int	current_command(t_command *current, t_descriptor *descriptor, char **env)
 {
 	t_redirections	*redirections;
 	int				redir_status;

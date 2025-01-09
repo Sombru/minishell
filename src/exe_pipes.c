@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe_pipes.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 14:05:03 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/03 14:06:01 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/09 11:28:45 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,26 +32,28 @@ static void	cleanup_child(t_redirections *redirections, t_command *commands,
 	free(descriptor);
 }
 
-int handle_pipes(t_command *current, t_command *commands, t_descriptor *descriptor, char **env)
+int	handle_pipes(t_command *current, t_command *commands,
+		t_descriptor *descriptor, char **env)
 {
-    pid_t pid;
-    int status;
+	pid_t	pid;
+	int		status;
 
-    if (pipe(descriptor->pipefd) == -1)
-        return (FAILURE);
-    pid = fork();
-    if (pid == 0)
-        status = handle_child(current, commands, descriptor, env);
-    else if (pid > 0)
-    {
-        signal(SIGINT, SIG_IGN);
-        waitpid(pid, &status, 0);
-        signal(SIGINT, handle_sigint);
-        handle_parent(descriptor);
-    }
-    else if (status == FAILURE)
-        return (FAILURE);
-    return (status);
+	status = 0;
+	if (pipe(descriptor->pipefd) == -1)
+		return (FAILURE);
+	pid = fork();
+	if (pid == 0)
+		status = handle_child(current, commands, descriptor, env);
+	else if (pid > 0)
+	{
+		signal(SIGINT, SIG_IGN);
+		waitpid(pid, &status, 0);
+		signal(SIGINT, handle_sigint);
+		handle_parent(descriptor);
+	}
+	else if (status == FAILURE)
+		return (FAILURE);
+	return (status);
 }
 
 int	handle_child(t_command *current, t_command *commands,
@@ -82,6 +84,7 @@ int	handle_child(t_command *current, t_command *commands,
 	cleanup_child(redirections, commands, descriptor);
 	exit(execute_command(args_copy, env));
 }
+
 int	handle_parent(t_descriptor *descriptor)
 {
 	close(descriptor->pipefd[1]);

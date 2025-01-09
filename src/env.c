@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/02 12:40:34 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/03 13:04:39 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/09 11:27:11 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	**store_environment(char **env)
 	count = 0;
 	while (env[count])
 		count++;
-	new_env = malloc((count + MAX_ENV_SIZE) * sizeof *new_env);
+	new_env = malloc((count + MAX_ENV_SIZE) * sizeof (*new_env));
 	if (!new_env)
 		return (NULL);
 	i = 0;

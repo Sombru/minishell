@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections_apply.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 05:55:28 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/03 13:23:33 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/09 15:44:13 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,45 +109,4 @@ int	append_redirection(char *destination)
 	manage_exit_status(0);
 	close(fd);
 	return (SUCCESS);
-}
-extern int	g_matching_mode;
-
-int	heredoc_redirection(char *delimiter, char **env)
-{
-	int		fd;
-	char	*buffer;
-	char	*expanded;
-	char	*result;
-
-	if (DEBUG_MODE)
-		printf("DEBUG: heredoc redirection\n");
-	fd = open(HEREDOC_TMP, O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	g_matching_mode = 1;
-	while (g_matching_mode != 0)
-	{
-		buffer = readline("heredoc> ");
-		if (!buffer || !g_matching_mode)
-			break ;
-		if (ft_strcmp(buffer, delimiter) == 0)
-		{
-			free(buffer);
-			break ;
-		}
-		result = buffer;
-		expanded = handle_var_heredoc(&buffer, env);
-		write(fd, expanded, ft_strlen(expanded));
-		write(fd, "\n", 1);
-		free(expanded);
-		free(result);
-	}
-	if (!g_matching_mode)
-	{
-		close(fd);
-		unlink(HEREDOC_TMP);
-		manage_exit_status(1);
-		return (FAILURE);
-	}
-	manage_exit_status(0);
-	close(fd);
-	return (input_redirection(HEREDOC_TMP));
 }
