@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/10 13:30:54 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/10 13:46:32 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@ char						*ft_getenv(const char *name, char **env);
 
 // execution_protocol
 
-int 						count_children(t_command *commands);
+int							count_children(t_command *commands);
 t_descriptor				*get_descriptors(void);
 int							execution_protocol(t_command *commands, char **env,
 								t_descriptor *descriptor, int num_of_children);

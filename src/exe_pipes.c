@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe_pipes.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 14:05:03 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/10 13:28:44 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/10 13:46:09 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,21 +30,6 @@ static void	cleanup_child(t_redirections *redirections, t_command *commands,
 	free_redirections(redirections);
 	free_commands(commands);
 	free(descriptor);
-}
-
-int	stdin_required(char *command)
-{
-	const char	*stdin_commands[] = {"cat", "grep", "awk", "wc", "sort", "sleep", NULL};
-	int			i;
-
-	i = 0;
-	while (stdin_commands[i])
-	{
-		if (ft_strcmp(command, stdin_commands[i]) == 0)
-			return (1);
-		i++;
-	}
-	return (0);
 }
 
 int	handle_pipes(t_command *current, t_command *commands,

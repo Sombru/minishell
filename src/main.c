@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 11:24:39 by pkostura          #+#    #+#             */
-/*   Updated: 2025/01/10 13:31:10 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/10 13:45:00 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,8 @@ static void	process_input(char *input, char **env)
 	if (tokens)
 	{
 		free_tokens(tokens);
-		execution_protocol(commands, env, get_descriptors(), count_children(commands));
+		execution_protocol(commands, env, get_descriptors(),
+			count_children(commands));
 		free_commands(commands);
 		free(input);
 	}

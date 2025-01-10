@@ -20,13 +20,12 @@ SRC			= main.c \
 			  bool.c \
 			  debug.c \
 			  env.c \
-			  execution_protocol.c \
+			  execution_protocol.c exec_utils.c exe_pipes.c \
 			  input.c \
 			  redirections.c redirections_apply.c redir_heredoc.c \
 			  signals.c \
 			  tokenize.c t_gather_word.c t_wildcard.c t_utils.c \
 			  parsing.c p_utils.c \
-			  exe_pipes.c \
 			  quotes.c \
 			  var_utils.c \
 			  ft_bin.c \

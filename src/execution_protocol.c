@@ -3,30 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execution_protocol.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/10 13:35:05 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/10 13:44:44 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-t_descriptor	*get_descriptors(void)
-{
-	t_descriptor	*descriptor;
-	int				original_fds[2];
-	int				prev_fd;
-
-	descriptor = malloc(sizeof(t_descriptor));
-	original_fds[0] = dup(STDIN_FILENO);
-	original_fds[1] = dup(STDOUT_FILENO);
-	prev_fd = dup(STDIN_FILENO);
-	descriptor->original_fds[0] = original_fds[0];
-	descriptor->original_fds[1] = original_fds[1];
-	descriptor->prev_fd = prev_fd;
-	return (descriptor);
-}
 
 static void	free_descriptor(t_descriptor *descriptor)
 {
@@ -35,23 +19,7 @@ static void	free_descriptor(t_descriptor *descriptor)
 	free(descriptor);
 }
 
-int count_children(t_command *commands)
-{
-	t_command	*current;
-	int			count;
-
-	count = 0;
-	current = commands;
-	while (current)
-	{
-		if (current->atribute == CHILD)
-			count++;
-		current = current->next;
-	}
-	return (count);
-}
-
-static void wait_for_children(int num_of_children)
+static void	wait_for_children(int num_of_children)
 {
 	int	i;
 
@@ -84,7 +52,7 @@ int	execution_protocol(t_command *commands, char **env,
 			if (current->atribute == CMDOR && manage_exit_status(555) == 0)
 				break ;
 			if (stdin_required(current->arguemnts[0]))
-				wait (NULL);
+				wait(NULL);
 			current = current->next;
 		}
 	}
