@@ -6,7 +6,7 @@
 /*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/09 11:23:02 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/10 11:29:28 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,37 @@ static void	free_descriptor(t_descriptor *descriptor)
 	free(descriptor);
 }
 
+int count_children(t_command *commands)
+{
+	t_command	*current;
+	int			count;
+
+	count = 0;
+	current = commands;
+	while (current)
+	{
+		if (current->atribute == CHILD)
+			count++;
+		current = current->next;
+	}
+	printf("count: %d\n", count);
+	return (count);
+}
+
+static void wait_for_children(int num_of_children)
+{
+	int	i;
+
+	i = 0;
+	while (i < num_of_children)
+	{
+		waitpid(-1, NULL, 0);
+		i++;
+	}
+}
+
 int	execution_protocol(t_command *commands, char **env,
-		t_descriptor *descriptor)
+		t_descriptor *descriptor, int num_of_children)
 {
 	t_command	*current;
 	int			status;
@@ -53,6 +82,7 @@ int	execution_protocol(t_command *commands, char **env,
 		}
 		if (current)
 		{
+	
 			if (current_command(current, descriptor, env) == FAILURE)
 				break ;
 			if (current->atribute == CMDOR && manage_exit_status(555) == 0)
@@ -60,6 +90,7 @@ int	execution_protocol(t_command *commands, char **env,
 			current = current->next;
 		}
 	}
+	wait_for_children(num_of_children);
 	free_descriptor(descriptor);
 	return (SUCCESS);
 }
@@ -87,6 +118,7 @@ int	current_command(t_command *current, t_descriptor *descriptor, char **env)
 	manage_exit_status(execute_command(current->arguemnts, env));
 	dup2(descriptor->original_fds[0], STDIN_FILENO);
 	dup2(descriptor->original_fds[1], STDOUT_FILENO);
+	waitpid(-1, NULL, 0);
 	return (SUCCESS);
 }
 

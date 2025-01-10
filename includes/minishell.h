@@ -6,7 +6,7 @@
 /*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/09 18:59:41 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/10 11:22:02 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,9 +161,10 @@ char						*ft_getenv(const char *name, char **env);
 
 // execution_protocol
 
+int 						count_children(t_command *commands);
 t_descriptor				*get_descriptors(void);
 int							execution_protocol(t_command *commands, char **env,
-								t_descriptor *descriptor);
+								t_descriptor *descriptor, int num_of_children);
 int							current_command(t_command *current,
 								t_descriptor *descriptor, char **env);
 int							execute_command(char **args, char **env);
@@ -226,6 +227,7 @@ void						print_commands(t_command *commands);
 void						handle_signals(void);
 void						handle_sigquit(int sig);
 void						handle_sigint(int sig);
+void						handle_sigint_child(int sig);
 
 // quotes
 

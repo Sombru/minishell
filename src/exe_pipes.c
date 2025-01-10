@@ -6,7 +6,7 @@
 /*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 14:05:03 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/09 11:28:45 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/10 11:11:45 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,7 @@ int	handle_pipes(t_command *current, t_command *commands,
 	if (pid == 0)
 		status = handle_child(current, commands, descriptor, env);
 	else if (pid > 0)
-	{
-		signal(SIGINT, SIG_IGN);
-		waitpid(pid, &status, 0);
-		signal(SIGINT, handle_sigint);
 		handle_parent(descriptor);
-	}
 	else if (status == FAILURE)
 		return (FAILURE);
 	return (status);
@@ -64,6 +59,7 @@ int	handle_child(t_command *current, t_command *commands,
 	char			**args_copy;
 
 	redir_status = 0;
+	signal(SIGINT, handle_sigint_child);
 	redirections = find_redirections(current->arguemnts);
 	if (redirections)
 	{
