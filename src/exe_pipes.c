@@ -6,7 +6,7 @@
 /*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 14:05:03 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/10 11:11:45 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/10 13:28:44 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,21 @@ static void	cleanup_child(t_redirections *redirections, t_command *commands,
 	free(descriptor);
 }
 
+int	stdin_required(char *command)
+{
+	const char	*stdin_commands[] = {"cat", "grep", "awk", "wc", "sort", "sleep", NULL};
+	int			i;
+
+	i = 0;
+	while (stdin_commands[i])
+	{
+		if (ft_strcmp(command, stdin_commands[i]) == 0)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 int	handle_pipes(t_command *current, t_command *commands,
 		t_descriptor *descriptor, char **env)
 {
@@ -45,7 +60,12 @@ int	handle_pipes(t_command *current, t_command *commands,
 	if (pid == 0)
 		status = handle_child(current, commands, descriptor, env);
 	else if (pid > 0)
+	{
+		signal(SIGINT, SIG_IGN);
+		if (!stdin_required(current->arguemnts[0]))
+			waitpid(pid, &status, 0);
 		handle_parent(descriptor);
+	}
 	else if (status == FAILURE)
 		return (FAILURE);
 	return (status);

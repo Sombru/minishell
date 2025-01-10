@@ -6,7 +6,7 @@
 /*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/10 11:29:28 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/10 13:35:05 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ int count_children(t_command *commands)
 			count++;
 		current = current->next;
 	}
-	printf("count: %d\n", count);
 	return (count);
 }
 
@@ -59,7 +58,7 @@ static void wait_for_children(int num_of_children)
 	i = 0;
 	while (i < num_of_children)
 	{
-		waitpid(-1, NULL, 0);
+		wait(NULL);
 		i++;
 	}
 }
@@ -68,25 +67,24 @@ int	execution_protocol(t_command *commands, char **env,
 		t_descriptor *descriptor, int num_of_children)
 {
 	t_command	*current;
-	int			status;
 
 	current = commands;
 	while (current)
 	{
 		while (current && current->atribute == CHILD)
 		{
-			status = handle_pipes(current, commands, descriptor, env);
-			if (status == FAILURE)
+			if (handle_pipes(current, commands, descriptor, env) == FAILURE)
 				break ;
 			current = current->next;
 		}
 		if (current)
 		{
-	
 			if (current_command(current, descriptor, env) == FAILURE)
 				break ;
 			if (current->atribute == CMDOR && manage_exit_status(555) == 0)
 				break ;
+			if (stdin_required(current->arguemnts[0]))
+				wait (NULL);
 			current = current->next;
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/10 11:22:02 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/10 13:30:54 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,7 @@ int							execute_bin_command(char **args, char **env);
 int							handle_pipes(t_command *current,
 								t_command *commands, t_descriptor *descriptor,
 								char **env);
+int							stdin_required(char *command);
 
 int							handle_child(t_command *current,
 								t_command *commands, t_descriptor *descriptor,

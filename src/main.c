@@ -6,7 +6,7 @@
 /*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 11:24:39 by pkostura          #+#    #+#             */
-/*   Updated: 2025/01/10 11:22:46 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/10 13:31:10 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ static void	process_input(char *input, char **env)
 {
 	t_token		*tokens;
 	t_command	*commands;
-	// t_command	*childs;
 
 	tokens = ft_tokenize(input, env);
 	if (tokens && is_valid_input(tokens))
@@ -70,7 +69,6 @@ static void	process_input(char *input, char **env)
 		return ;
 	}
 	commands = parse_tokens(tokens);
-	
 	if (tokens)
 	{
 		free_tokens(tokens);
