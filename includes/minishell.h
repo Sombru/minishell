@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/10 13:46:32 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/12 15:08:13 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 # define C "\033[1;36m"   // bold cyan
 # define W "\033[1;37m"   // bold white
 
-# define DEBUG_MODE 0
+# define DEBUG_MODE 1
 # define MAX_ENV_SIZE 1024
 # define HEREDOC_TMP ".$%%$XxXxX_heredoc_tmp_XxXxX$%%$"
 # define STDIN "$%%$XXXXII<IIXXXX&%%$"
@@ -108,6 +108,7 @@ typedef struct s_command
 	t_atribute				atribute;
 	struct s_redirections	*redirections;
 	struct s_command		*next;
+	struct s_command		*prev;
 }							t_command;
 
 typedef struct s_descriptors
@@ -161,13 +162,14 @@ char						*ft_getenv(const char *name, char **env);
 
 // execution_protocol
 
-int							count_children(t_command *commands);
+int							execution_protocol(t_command *commands, char **env);
+int							current_command(t_command *command, char **env);
+int							execute_command(char **args, char **env, t_descriptor *descriptor, t_command *commands);
+
+
 t_descriptor				*get_descriptors(void);
-int							execution_protocol(t_command *commands, char **env,
-								t_descriptor *descriptor, int num_of_children);
-int							current_command(t_command *current,
-								t_descriptor *descriptor, char **env);
-int							execute_command(char **args, char **env);
+void						free_descriptor(t_descriptor *descriptor);
+
 
 // bin
 
@@ -175,15 +177,7 @@ int							execute_bin_command(char **args, char **env);
 
 // pipes
 
-int							handle_pipes(t_command *current,
-								t_command *commands, t_descriptor *descriptor,
-								char **env);
-int							stdin_required(char *command);
 
-int							handle_child(t_command *current,
-								t_command *commands, t_descriptor *descriptor,
-								char **env);
-int							handle_parent(t_descriptor *descriptor);
 
 // commands
 
@@ -193,7 +187,7 @@ int							ft_pwd(char **args);
 int							ft_export(char **args, char **env);
 int							ft_unset(char **args, char **env);
 int							ft_env(char **args, char **env);
-int							ft_exit(char **args, char **env);
+int							ft_exit(char **args, char **env, t_descriptor *descriptor, t_command *commands);
 
 // tokenization
 

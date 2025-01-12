@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bin.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 05:02:57 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/10 09:50:46 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/12 21:53:01 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	execute_bin_command(char **args, char **env)
 	pid_t	pid;
 
 	status = 0;
-	if (args[0][0] == '/')
+	if (args[0][0] == '/' || (args[0][0] == '.' && args[0][1] == '/'))
 		path = ft_strdup(args[0]);
 	else
 		path = get_bin_path(args[0], env);
@@ -71,7 +71,7 @@ int	execute_bin_command(char **args, char **env)
 	else if (pid > 0)
 	{
 		signal(SIGINT, SIG_IGN);
-		waitpid(pid, &status, 0);
+		waitpid(pid, &status, WNOHANG);
 	}
 	free(path);
 	if (status != 0)

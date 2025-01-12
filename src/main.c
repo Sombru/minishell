@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 11:24:39 by pkostura          #+#    #+#             */
-/*   Updated: 2025/01/10 13:45:00 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/12 21:55:55 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,27 +18,27 @@
 // flag: 555 for current value
 int	manage_exit_status(int set_flag)
 {
-	static int	g_exit_status = 0;
+	static int	exit_status = 0;
 
 	if (set_flag == 127)
 	{
-		g_exit_status = 127;
-		return (g_exit_status);
+		exit_status = 127;
+		return (exit_status);
 	}
 	if (set_flag == 0)
 	{
-		g_exit_status = 0;
-		return (g_exit_status);
+		exit_status = 0;
+		return (exit_status);
 	}
 	if (set_flag >= 1 && set_flag < 300)
 	{
-		if (g_exit_status == 127)
-			g_exit_status = 1;
+		if (exit_status == 127)
+			exit_status = 1;
 		else
-			g_exit_status++;
-		return (g_exit_status);
+			exit_status++;
+		return (exit_status);
 	}
-	return (g_exit_status);
+	return (exit_status);
 }
 
 static void	handle_input_null(char *input, char **env)
@@ -49,6 +49,9 @@ static void	handle_input_null(char *input, char **env)
 		free(input);
 		ft_free_array(env);
 		rl_clear_history();
+		// close(STDERR_FILENO);
+		// close(STDIN_FILENO);
+		// close(STDOUT_FILENO);
 		exit(manage_exit_status(555));
 	}
 }
@@ -72,8 +75,11 @@ static void	process_input(char *input, char **env)
 	if (tokens)
 	{
 		free_tokens(tokens);
-		execution_protocol(commands, env, get_descriptors(),
-			count_children(commands));
+		if (DEBUG_MODE)
+		{
+			print_commands(commands);
+		}
+		execution_protocol(commands, env);
 		free_commands(commands);
 		free(input);
 	}

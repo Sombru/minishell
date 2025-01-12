@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:11:55 by pkostura          #+#    #+#             */
-/*   Updated: 2025/01/09 19:05:53 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/12 21:34:47 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static int	handle_exit_arguments(char **args, int *exit_code)
 	return (SUCCESS);
 }
 
-int	ft_exit(char **args, char **env)
+int	ft_exit(char **args, char **env, t_descriptor *descriptor, t_command *commands)
 {
 	int	exit_code;
 
@@ -58,9 +58,13 @@ int	ft_exit(char **args, char **env)
 	if (handle_exit_arguments(args, &exit_code))
 		return (FAILURE);
 	printf("terminated with status: %d\n", exit_code);
-	ft_free_array(args);
+	// ft_free_array(args);
 	ft_free_array(env);
 	rl_clear_history();
+	free_commands(commands);
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	free_descriptor(descriptor);
 	exit(exit_code);
 	return (SUCCESS);
 }

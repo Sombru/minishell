@@ -3,92 +3,57 @@
 /*                                                        :::      ::::::::   */
 /*   execution_protocol.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/10 13:44:44 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/12 21:53:12 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static void	free_descriptor(t_descriptor *descriptor)
+int execution_protocol(t_command *commands, char **env)
 {
-	close(descriptor->original_fds[0]);
-	close(descriptor->original_fds[1]);
-	free(descriptor);
-}
-
-static void	wait_for_children(int num_of_children)
-{
-	int	i;
-
-	i = 0;
-	while (i < num_of_children)
+	
+	while (commands)
 	{
-		wait(NULL);
-		i++;
+		// PIPE
+		// ???
+		// while(pipes, forks)
+		// fork();
+		// waitpid(pid);
+		current_command(commands, env);
+		if (commands->atribute == CMDOR && manage_exit_status(555) == 0)
+			break ;
+		commands = commands->next;
 	}
+	return (SUCCESS);	
 }
 
-int	execution_protocol(t_command *commands, char **env,
-		t_descriptor *descriptor, int num_of_children)
-{
-	t_command	*current;
-
-	current = commands;
-	while (current)
-	{
-		while (current && current->atribute == CHILD)
-		{
-			if (handle_pipes(current, commands, descriptor, env) == FAILURE)
-				break ;
-			current = current->next;
-		}
-		if (current)
-		{
-			if (current_command(current, descriptor, env) == FAILURE)
-				break ;
-			if (current->atribute == CMDOR && manage_exit_status(555) == 0)
-				break ;
-			if (stdin_required(current->arguemnts[0]))
-				wait(NULL);
-			current = current->next;
-		}
-	}
-	wait_for_children(num_of_children);
-	free_descriptor(descriptor);
-	return (SUCCESS);
-}
-
-int	current_command(t_command *current, t_descriptor *descriptor, char **env)
+int	current_command(t_command *command, char **env)
 {
 	t_redirections	*redirections;
+	t_descriptor	*descriptor;
 	int				redir_status;
 
 	redir_status = 0;
-	redirections = find_redirections(current->arguemnts);
-	if (redirections && ft_strcmp(redirections->type, HEREDOC) == 0)
-		dup2(descriptor->original_fds[0], STDOUT_FILENO);
-	else
-		dup2(descriptor->prev_fd, STDIN_FILENO);
+	descriptor = get_descriptors();
+	redirections = find_redirections(command->arguemnts);
 	if (redirections)
 	{
 		redir_status = apply_redirections(redirections, env);
-		current->arguemnts = reparse_args(current->arguemnts,
-				ft_count_args(current->arguemnts));
+		command->arguemnts = reparse_args(command->arguemnts,
+			ft_count_args(command->arguemnts));
 		free_redirections(redirections);
 	}
 	if (redir_status == FAILURE)
-		return (FAILURE);
-	manage_exit_status(execute_command(current->arguemnts, env));
-	dup2(descriptor->original_fds[0], STDIN_FILENO);
-	dup2(descriptor->original_fds[1], STDOUT_FILENO);
-	waitpid(-1, NULL, 0);
-	return (SUCCESS);
+		return (manage_exit_status(FAILURE));
+	manage_exit_status(execute_command(command->arguemnts, env, descriptor, command));
+	free_descriptor(descriptor);
+	return (manage_exit_status(555));
 }
 
-int	execute_command(char **args, char **env)
+int	execute_command(char **args, char **env, t_descriptor *descriptor, t_command *commands)
 {
 	if (args[0] == NULL)
 		return (SUCCESS);
@@ -105,7 +70,7 @@ int	execute_command(char **args, char **env)
 	else if (ft_strcmp(args[0], ENV) == 0)
 		return (ft_env(args, env));
 	else if (ft_strcmp(args[0], EXIT) == 0)
-		return (ft_exit(args, env));
+		return (ft_exit(args, env, descriptor, commands));
 	else
 		return (execute_bin_command(args, env));
 }

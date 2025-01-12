@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   t_gather_word.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 16:53:35 by pkostura          #+#    #+#             */
-/*   Updated: 2025/01/09 19:35:06 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/12 12:21:04 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,12 +86,14 @@ char	*gather_word(char **input, char **env)
 
 	word = ft_strdup("");
 	quotes_flag = 0;
-	while (**input && !ft_isspace(**input) && **input != '|' && **input != '>'
+	while (**input && **input != '|' && **input != '>'
 		&& **input != '<' && (**input != '&' || *(*input + 1) != '&'))
 	{
 		word = handle_special_characters(input, env, word, &quotes_flag);
 		if (!word)
 			return (NULL);
+		if (**input && ft_isspace(**input))
+			break ;
 		if (**input && **input != '\'' && **input != '"' && **input != '$')
 		{
 			tmp[0] = **input;

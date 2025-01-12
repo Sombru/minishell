@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   p_utils.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 15:10:46 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/09 18:42:00 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/12 18:32:37 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ t_command	*create_command(char **args, t_atribute atribute)
 	new_command->arguemnts = args;
 	new_command->atribute = atribute;
 	new_command->next = NULL;
+	new_command->prev = NULL;
 	return (new_command);
 }
 
@@ -40,6 +41,7 @@ void	add_command(t_command **commands, t_command *new_command)
 	while (current->next)
 		current = current->next;
 	current->next = new_command;
+	new_command->prev = current;
 }
 
 void	free_commands(t_command *commands)
@@ -48,6 +50,8 @@ void	free_commands(t_command *commands)
 	t_command	*next;
 	int			i;
 
+	while (commands && commands->prev)
+		commands = commands->prev;
 	current = commands;
 	while (current)
 	{
