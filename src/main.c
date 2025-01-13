@@ -6,40 +6,11 @@
 /*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 11:24:39 by pkostura          #+#    #+#             */
-/*   Updated: 2025/01/12 21:55:55 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/13 14:46:30 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-// flag: 127 on command not found
-// flag: 0 on no error
-// flag: 1 on error
-// flag: 555 for current value
-int	manage_exit_status(int set_flag)
-{
-	static int	exit_status = 0;
-
-	if (set_flag == 127)
-	{
-		exit_status = 127;
-		return (exit_status);
-	}
-	if (set_flag == 0)
-	{
-		exit_status = 0;
-		return (exit_status);
-	}
-	if (set_flag >= 1 && set_flag < 300)
-	{
-		if (exit_status == 127)
-			exit_status = 1;
-		else
-			exit_status++;
-		return (exit_status);
-	}
-	return (exit_status);
-}
 
 static void	handle_input_null(char *input, char **env)
 {
@@ -55,8 +26,6 @@ static void	handle_input_null(char *input, char **env)
 		exit(manage_exit_status(555));
 	}
 }
-
-int			g_matching_mode = 0;
 
 static void	process_input(char *input, char **env)
 {

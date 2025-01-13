@@ -17,6 +17,7 @@ INC			=	-I ./includes/\
 # Sources  
 SRC_DIR		= src/
 SRC			= main.c \
+			  globals.c \
 			  bool.c \
 			  debug.c \
 			  env.c \

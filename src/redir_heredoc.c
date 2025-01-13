@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   redir_heredoc.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 15:44:07 by pkostura          #+#    #+#             */
-/*   Updated: 2025/01/09 15:44:21 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/13 14:47:01 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-extern int	g_matching_mode;
 
 static int	terminate_heredoc(int fd, char *buffer)
 {
@@ -30,11 +29,11 @@ int	heredoc_redirection(char *delimiter, char **env)
 	char	*nl;
 
 	fd = open(HEREDOC_TMP, O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	g_matching_mode = 1;
-	while (g_matching_mode)
+	matching_mode(true);
+	while (matching_mode(2) == true)
 	{
 		buffer = readline("heredoc> ");
-		if (!g_matching_mode || !buffer)
+		if (!buffer || matching_mode(2) == false)
 			return (terminate_heredoc(fd, buffer));
 		if (ft_strcmp(buffer, delimiter) == 0)
 		{

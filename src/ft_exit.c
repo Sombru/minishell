@@ -6,7 +6,7 @@
 /*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:11:55 by pkostura          #+#    #+#             */
-/*   Updated: 2025/01/12 21:34:47 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/13 13:42:56 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ int	ft_exit(char **args, char **env, t_descriptor *descriptor, t_command *comman
 	exit_code = manage_exit_status(555);
 	if (handle_exit_arguments(args, &exit_code))
 		return (FAILURE);
-	printf("terminated with status: %d\n", exit_code);
-	// ft_free_array(args);
+	if (DEBUG_MODE)
+		printf("terminated with status: %d\n", exit_code);
 	ft_free_array(env);
 	rl_clear_history();
 	free_commands(commands);

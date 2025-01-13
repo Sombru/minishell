@@ -6,7 +6,7 @@
 /*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 00:02:42 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/11 17:26:22 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/13 14:40:10 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ void	handle_sigint(int sig)
 	char	*tmp;
 
 	(void)sig;
-	if (g_matching_mode)
+	if (matching_mode(2) == true)
 	{
-		g_matching_mode = 0;
+		matching_mode(0);
 		write(STDOUT_FILENO, "\n", 1);
 		rl_done = 1;
 		tmp = sigint_promt();
@@ -55,14 +55,7 @@ void	handle_sigint(int sig)
 void	handle_sigint_child(int sig)
 {
 	(void)sig;
-	printf("exit child \n");
-	exit(130);
-}
-
-// Ctrl-\ does nothing
-void	handle_sigquit(int sig)
-{
-	(void)sig;
+	write(STDOUT_FILENO, "\n", 1);
 }
 
 void	handle_signals(void)

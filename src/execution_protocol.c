@@ -6,7 +6,7 @@
 /*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/12 21:53:12 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/13 14:18:11 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,12 @@
 
 int execution_protocol(t_command *commands, char **env)
 {
-	
 	while (commands)
 	{
 		// PIPE
 		// ???
 		// while(pipes, forks)
-		// fork();
+		// pid = fork();
 		// waitpid(pid);
 		current_command(commands, env);
 		if (commands->atribute == CMDOR && manage_exit_status(555) == 0)
@@ -72,5 +71,5 @@ int	execute_command(char **args, char **env, t_descriptor *descriptor, t_command
 	else if (ft_strcmp(args[0], EXIT) == 0)
 		return (ft_exit(args, env, descriptor, commands));
 	else
-		return (execute_bin_command(args, env));
+		return (execute_bin_command(args, env, descriptor, commands));
 }

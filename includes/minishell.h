@@ -6,7 +6,7 @@
 /*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/12 15:08:13 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/13 14:59:39 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,12 +118,13 @@ typedef struct s_descriptors
 	int						prev_fd;
 }							t_descriptor;
 
-extern int					g_matching_mode;
-
 // main
 
+// globals
+
 int							manage_exit_status(int set_flag);
-void						free_environment(char **env);
+bool 						matching_mode(int set_flag);
+
 
 // parsing
 
@@ -173,7 +174,7 @@ void						free_descriptor(t_descriptor *descriptor);
 
 // bin
 
-int							execute_bin_command(char **args, char **env);
+int							execute_bin_command(char **args, char **env, t_descriptor *descriptor, t_command *commands);
 
 // pipes
 

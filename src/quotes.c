@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 01:34:37 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/09 19:17:23 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/13 14:46:50 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-extern int	g_matching_mode;
 
 char	*handle_single_quotes(char **input)
 {
@@ -44,11 +42,11 @@ char	*handle_unmatched_single_quotes(char *start)
 
 	res = ft_strdup(start);
 	nl = ft_strdup("\n");
-	g_matching_mode = 1;
-	while (g_matching_mode)
+	matching_mode(true);
+	while (matching_mode(2) == true)
 	{
 		buffer = readline("quote> ");
-		if (!buffer || !g_matching_mode)
+		if (!buffer || matching_mode(2) == false)
 			return (free(res), free(nl), NULL);
 		res = ft_strjoin_free(res, nl);
 		res = ft_strjoin_free(res, buffer);
@@ -109,11 +107,11 @@ char	*handle_unmatched_double_quotes(char *start, char **env)
 
 	res = ft_strdup(start);
 	nl = ft_strdup("\n");
-	g_matching_mode = 1;
-	while (g_matching_mode)
+	matching_mode(true);
+	while (matching_mode(2) == true)
 	{
 		buffer = readline("dquote> ");
-		if (!buffer || !g_matching_mode)
+		if (!buffer ||matching_mode(2) == false)
 			return (free(res), free(nl), NULL);
 		res = ft_strjoin_free(res, nl);
 		res = ft_strjoin_free(res, buffer);

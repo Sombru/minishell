@@ -6,7 +6,7 @@
 /*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 05:02:57 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/12 21:53:01 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/13 15:02:40 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,31 @@ static int	command_not_found(char **args)
 	return (COMMAND_NOT_FOUND);
 }
 
+static int	no_file_error(char **args)
+{
+	char	*tmp;
+
+	ft_putstr_fd(RED "minishell:" RST " No such file or directory: " RED "`",
+		STDERR_FILENO);
+	tmp = ft_strjoin(args[0], "'\n" RST);
+	ft_putstr_fd(tmp, STDERR_FILENO);
+	free(tmp);
+	return (126);
+}
+
+static int exit_execve(pid_t pid, char *path, char **args)
+{
+	int status;
+
+	signal(SIGINT, handle_sigint_child);
+	waitpid(pid, &status, 0);
+	if (WTERMSIG(status))
+		return (free(path), WTERMSIG(status));
+	if (WEXITSTATUS(status) == 126)
+		return (free(path), no_file_error(args));
+	return (free(path), WEXITSTATUS(status));
+}
+
 char	*get_bin_path(char *command, char **env)
 {
 	char	**path_split;
@@ -32,7 +57,7 @@ char	*get_bin_path(char *command, char **env)
 	int		i;
 
 	if (ft_getenv("PATH", env) == NULL)
-		return (NULL);
+		return (free(command), NULL);
 	path_split = ft_split(ft_getenv("PATH", env), ':');
 	i = 0;
 	while (path_split[i])
@@ -43,38 +68,33 @@ char	*get_bin_path(char *command, char **env)
 		if (access(ret_path, F_OK) == 0)
 		{
 			ft_free_array(path_split);
-			return (ret_path);
+			return (free(command), ret_path);
 		}
 		free(ret_path);
 		i++;
 	}
 	ft_free_array(path_split);
-	return (NULL);
+	return (free(command), NULL);
 }
 
-int	execute_bin_command(char **args, char **env)
+int	execute_bin_command(char **args, char **env, t_descriptor *descriptor, t_command *commands)
 {
-	char	*path;
-	int		status;
-	pid_t	pid;
+	static char	*exit_args[] = {"exit", "126", NULL};
+	char		*path;
+	pid_t		pid;
 
-	status = 0;
-	if (args[0][0] == '/' || (args[0][0] == '.' && args[0][1] == '/'))
+	if (args[0][0] == '/' || args[0][0] == '.' || args[0][1] == '/')
 		path = ft_strdup(args[0]);
 	else
-		path = get_bin_path(args[0], env);
+		path = get_bin_path(ft_strdup(args[0]), env);
 	if (path == NULL)
-		return (command_not_found(args));
+		return (free(path), command_not_found(args));
 	pid = fork();
 	if (pid == 0)
-		status = execve(path, args, env);
-	else if (pid > 0)
-	{
-		signal(SIGINT, SIG_IGN);
-		waitpid(pid, &status, WNOHANG);
+	{	
+		execve(path, args, env);
+		free(path); 
+		ft_exit(exit_args, env, descriptor, commands);
 	}
-	free(path);
-	if (status != 0)
-		return (FAILURE);
-	return (SUCCESS);
+	return(exit_execve(pid, path, args));
 }
