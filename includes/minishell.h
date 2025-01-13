@@ -6,7 +6,7 @@
 /*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/13 16:44:33 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/13 18:03:19 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 # define C "\033[1;36m"   // bold cyan
 # define W "\033[1;37m"   // bold white
 
-# define DEBUG_MODE 1
+# define DEBUG_MODE 0
 # define MAX_ENV_SIZE 1024
 # define HEREDOC_TMP ".$%%$XxXxX_heredoc_tmp_XxXxX$%%$"
 # define STDIN "$%%$XXXXII<IIXXXX&%%$"
@@ -220,6 +220,7 @@ void						print_commands(t_command *commands);
 
 // signals
 
+extern int					g_parent_process;
 void						handle_signals(void);
 void						handle_sigquit(int sig);
 void						handle_sigint(int sig);

@@ -6,7 +6,7 @@
 /*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/13 16:50:41 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/13 17:55:38 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,42 @@
 
 int	execution_protocol(t_command *commands, char **env)
 {
-	t_command	*tmp;
+	int			exit_status;
+	t_command	*pipeline;
 	int			cmd_count;
 
-	tmp = commands;
-	cmd_count = 0;
-	while (tmp)
-	{
-		cmd_count++;
-		tmp = tmp->next;
-	}
-	if (cmd_count > 1)
-		return (pipe_commands(commands, env));
+	exit_status = SUCCESS;
 	while (commands)
 	{
-		current_command(commands, env);
-		if (commands->atribute == CMDOR && manage_exit_status(555) == 0)
-			break ;
-		commands = commands->next;
+		pipeline = commands;
+		cmd_count = 0;
+		while (pipeline && pipeline->atribute != CMDAND
+			&& pipeline->atribute != CMDOR)
+		{
+			cmd_count++;
+			pipeline = pipeline->next;
+		}
+		if (cmd_count > 1)
+			exit_status = pipe_commands(commands, env);
+		else
+			exit_status = current_command(commands, env);
+		commands = pipeline;
+		if (commands)
+		{
+			if (commands->atribute == CMDAND)
+			{
+				if (exit_status != SUCCESS)
+					commands = commands->next;
+			}
+			else if (commands->atribute == CMDOR)
+			{
+				if (exit_status == SUCCESS)
+					commands = commands->next;
+			}
+			commands = commands->next;
+		}
 	}
-	return (SUCCESS);
+	return (exit_status);
 }
 
 int	current_command(t_command *command, char **env)
@@ -41,6 +57,7 @@ int	current_command(t_command *command, char **env)
 	t_redirections	*redirections;
 	t_descriptor	*descriptor;
 	int				redir_status;
+	int				status;
 
 	redir_status = 0;
 	descriptor = get_descriptors();
@@ -53,11 +70,15 @@ int	current_command(t_command *command, char **env)
 		free_redirections(redirections);
 	}
 	if (redir_status == FAILURE)
+	{
+		manage_exit_status(FAILURE);
+		free_descriptor(descriptor);
 		return (manage_exit_status(FAILURE));
-	manage_exit_status(execute_command(command->arguemnts, env, descriptor,
-			command));
+	}
+	status = execute_command(command->arguemnts, env, descriptor, command);
+	manage_exit_status(status);
 	free_descriptor(descriptor);
-	return (manage_exit_status(555));
+	return (manage_exit_status(status));
 }
 
 int	execute_command(char **args, char **env, t_descriptor *descriptor,

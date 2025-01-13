@@ -6,11 +6,13 @@
 /*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 11:24:39 by pkostura          #+#    #+#             */
-/*   Updated: 2025/01/13 16:51:36 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/13 17:16:39 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+int	g_parent_process;
 
 static void	handle_input_null(char *input, char **env)
 {
@@ -75,6 +77,7 @@ int	main(int argc, char **argv, char **env_list)
 	(void)argc;
 	(void)argv;
 	env = store_environment(env_list);
+	g_parent_process = 1;
 	main_loop(env);
 	return (0);
 }

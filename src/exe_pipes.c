@@ -6,11 +6,13 @@
 /*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 14:05:03 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/13 16:51:08 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/13 18:12:54 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+extern int	g_parent_process;
 
 int	pipe_commands(t_command *commands, char **env)
 {
@@ -30,9 +32,6 @@ int	pipe_commands(t_command *commands, char **env)
 	}
 	if (DEBUG_MODE)
 		printf("Command count: %d\n", cmd_count);
-	if (cmd_count < 2)
-		return (current_command(commands, env), 0);
-
 	pipes = malloc(sizeof(int) * 2 * (cmd_count - 1));
 	pids = malloc(sizeof(pid_t) * cmd_count);
 	i = 0;
@@ -50,6 +49,7 @@ int	pipe_commands(t_command *commands, char **env)
 			printf("Forked process with PID: %d\n", pids[i]);
 		if (pids[i] == 0)
 		{
+			g_parent_process = 0;
 			if (i > 0)
 				dup2(pipes[(i - 1) * 2], STDIN_FILENO);
 			if (i < cmd_count - 1)
@@ -61,6 +61,10 @@ int	pipe_commands(t_command *commands, char **env)
 				j++;
 			}
 			current_command(cmd_list, env);
+			ft_free_array(env);
+			free_commands(commands);
+			free(pipes);
+			free(pids);
 			exit(manage_exit_status(0));
 		}
 		cmd_list = cmd_list->next;

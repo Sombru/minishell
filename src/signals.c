@@ -6,15 +6,15 @@
 /*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 00:02:42 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/13 16:51:40 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/13 17:17:08 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-extern int	g_matching_mode;
+extern int	g_parent_process;
 
-static char	*sigint_promt(void)
+static char	*sigint_prompt(void)
 {
 	char	*prompt;
 	char	*exit_status;
@@ -36,15 +36,14 @@ void	handle_sigint(int sig)
 	char	*tmp;
 
 	(void)sig;
-	// i've added this part so only the parent prints prompt on ctrl C
-	if (getpid() != getppid())
-		return ;
+	if (!g_parent_process)
+		return;
 	if (matching_mode(2) == true)
 	{
 		matching_mode(0);
 		write(STDOUT_FILENO, "\n", 1);
 		rl_done = 1;
-		tmp = sigint_promt();
+		tmp = sigint_prompt();
 		write(STDERR_FILENO, tmp, ft_strlen(tmp));
 		free(tmp);
 		return ;
