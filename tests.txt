@@ -1,0 +1,14 @@
+ls | grep ll && pwd | grep mini
+
+ls | grep ll || pwd | grep mini
+
+cat | ls && pwd | grep mini
+
+cat | ls || pwd | grep mini
+
+cat /dev/urandom | head -n 5
+
+ls > file | cat < file | grep mini && ls | wc || env
+
+
+

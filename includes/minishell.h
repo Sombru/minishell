@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/13 18:03:19 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/14 00:21:36 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@
 # define HEREDOC "$%%$XXXXII<<IIXXXX&%%$"
 # define PROMT "minishell: "
 # define SYNTAX_ERR "syntax error near unexpected token"
+# define DOC_EOF " heredoc terimnated by EOF, wanted: "
 # define COMMAND_NOT_FOUND 127
 # define SUCCESS 0
 # define FAILURE 1
@@ -163,6 +164,7 @@ char						*ft_getenv(const char *name, char **env);
 
 // execution_protocol
 
+int							handle_redirections(t_command *command, t_descriptor **descriptor, char **env);
 int							execution_protocol(t_command *commands, char **env);
 int							current_command(t_command *command, char **env);
 int							execute_command(char **args, char **env, t_descriptor *descriptor, t_command *commands);
@@ -178,7 +180,7 @@ int							execute_bin_command(char **args, char **env, t_descriptor *descriptor,
 
 // pipes
 
-int							pipe_commands(t_command *commands, char **env);
+int							pipe_commands(t_command **commands, char **env);
 
 // commands
 

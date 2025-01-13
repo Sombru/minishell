@@ -6,7 +6,7 @@
 /*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 13:44:10 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/12 15:39:16 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/13 20:38:37 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,12 @@ t_descriptor	*get_descriptors(void)
 {
 	t_descriptor	*descriptor;
 	int				original_fds[2];
-	// int				prev_fd;
 
 	descriptor = malloc(sizeof(t_descriptor));
 	original_fds[0] = dup(STDIN_FILENO);
 	original_fds[1] = dup(STDOUT_FILENO);
-	// prev_fd = dup(STDIN_FILENO);
 	descriptor->original_fds[0] = original_fds[0];
 	descriptor->original_fds[1] = original_fds[1];
-	// descriptor->prev_fd = prev_fd;
 	return (descriptor);
 }
 

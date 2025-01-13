@@ -3,64 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   execution_protocol.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/13 17:55:38 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/14 00:00:58 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	execution_protocol(t_command *commands, char **env)
-{
-	int			exit_status;
-	t_command	*pipeline;
-	int			cmd_count;
-
-	exit_status = SUCCESS;
-	while (commands)
-	{
-		pipeline = commands;
-		cmd_count = 0;
-		while (pipeline && pipeline->atribute != CMDAND
-			&& pipeline->atribute != CMDOR)
-		{
-			cmd_count++;
-			pipeline = pipeline->next;
-		}
-		if (cmd_count > 1)
-			exit_status = pipe_commands(commands, env);
-		else
-			exit_status = current_command(commands, env);
-		commands = pipeline;
-		if (commands)
-		{
-			if (commands->atribute == CMDAND)
-			{
-				if (exit_status != SUCCESS)
-					commands = commands->next;
-			}
-			else if (commands->atribute == CMDOR)
-			{
-				if (exit_status == SUCCESS)
-					commands = commands->next;
-			}
-			commands = commands->next;
-		}
-	}
-	return (exit_status);
-}
-
-int	current_command(t_command *command, char **env)
+int	handle_redirections(t_command *command, t_descriptor **descriptor, char **env)
 {
 	t_redirections	*redirections;
-	t_descriptor	*descriptor;
 	int				redir_status;
-	int				status;
 
 	redir_status = 0;
-	descriptor = get_descriptors();
+	(*descriptor) = get_descriptors();
 	redirections = find_redirections(command->arguemnts);
 	if (redirections)
 	{
@@ -69,16 +27,31 @@ int	current_command(t_command *command, char **env)
 				ft_count_args(command->arguemnts));
 		free_redirections(redirections);
 	}
-	if (redir_status == FAILURE)
+	return (manage_exit_status(redir_status));
+}
+
+int	execution_protocol(t_command *commands, char **env)
+{
+	t_descriptor	*descriptor;
+	while (commands)
 	{
-		manage_exit_status(FAILURE);
-		free_descriptor(descriptor);
-		return (manage_exit_status(FAILURE));
+		if (commands && commands->atribute == CHILD)
+		{
+			pipe_commands(&commands, env);
+		}
+		else
+		{
+			if(handle_redirections(commands, &descriptor, env) == SUCCESS)
+				manage_exit_status(execute_command(commands->arguemnts, env, descriptor, commands));
+			free_descriptor(descriptor);
+			commands = commands->next;
+		}
+		if (!commands)
+			break ;
+		if (commands && commands->prev->atribute == CMDOR && manage_exit_status(555) == 0)
+			break ;
 	}
-	status = execute_command(command->arguemnts, env, descriptor, command);
-	manage_exit_status(status);
-	free_descriptor(descriptor);
-	return (manage_exit_status(status));
+	return (SUCCESS);
 }
 
 int	execute_command(char **args, char **env, t_descriptor *descriptor,
