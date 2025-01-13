@@ -3,30 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   execution_protocol.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/13 14:18:11 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/13 16:50:41 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int execution_protocol(t_command *commands, char **env)
+int	execution_protocol(t_command *commands, char **env)
 {
+	t_command	*tmp;
+	int			cmd_count;
+
+	tmp = commands;
+	cmd_count = 0;
+	while (tmp)
+	{
+		cmd_count++;
+		tmp = tmp->next;
+	}
+	if (cmd_count > 1)
+		return (pipe_commands(commands, env));
 	while (commands)
 	{
-		// PIPE
-		// ???
-		// while(pipes, forks)
-		// pid = fork();
-		// waitpid(pid);
 		current_command(commands, env);
 		if (commands->atribute == CMDOR && manage_exit_status(555) == 0)
 			break ;
 		commands = commands->next;
 	}
-	return (SUCCESS);	
+	return (SUCCESS);
 }
 
 int	current_command(t_command *command, char **env)
@@ -42,17 +49,19 @@ int	current_command(t_command *command, char **env)
 	{
 		redir_status = apply_redirections(redirections, env);
 		command->arguemnts = reparse_args(command->arguemnts,
-			ft_count_args(command->arguemnts));
+				ft_count_args(command->arguemnts));
 		free_redirections(redirections);
 	}
 	if (redir_status == FAILURE)
 		return (manage_exit_status(FAILURE));
-	manage_exit_status(execute_command(command->arguemnts, env, descriptor, command));
+	manage_exit_status(execute_command(command->arguemnts, env, descriptor,
+			command));
 	free_descriptor(descriptor);
 	return (manage_exit_status(555));
 }
 
-int	execute_command(char **args, char **env, t_descriptor *descriptor, t_command *commands)
+int	execute_command(char **args, char **env, t_descriptor *descriptor,
+		t_command *commands)
 {
 	if (args[0] == NULL)
 		return (SUCCESS);

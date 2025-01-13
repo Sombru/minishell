@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 11:24:39 by pkostura          #+#    #+#             */
-/*   Updated: 2025/01/13 14:46:30 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/13 16:51:36 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,6 @@ static void	handle_input_null(char *input, char **env)
 		free(input);
 		ft_free_array(env);
 		rl_clear_history();
-		// close(STDERR_FILENO);
-		// close(STDIN_FILENO);
-		// close(STDOUT_FILENO);
 		exit(manage_exit_status(555));
 	}
 }
@@ -44,10 +41,10 @@ static void	process_input(char *input, char **env)
 	if (tokens)
 	{
 		free_tokens(tokens);
-		if (DEBUG_MODE)
-		{
-			print_commands(commands);
-		}
+		// if (DEBUG_MODE)
+		// {
+		// 	print_commands(commands);
+		// }
 		execution_protocol(commands, env);
 		free_commands(commands);
 		free(input);

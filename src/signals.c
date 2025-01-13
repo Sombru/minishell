@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 00:02:42 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/13 14:40:10 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/13 16:51:40 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,9 @@ void	handle_sigint(int sig)
 	char	*tmp;
 
 	(void)sig;
+	// i've added this part so only the parent prints prompt on ctrl C
+	if (getpid() != getppid())
+		return ;
 	if (matching_mode(2) == true)
 	{
 		matching_mode(0);
