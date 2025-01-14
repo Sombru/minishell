@@ -1,3 +1,5 @@
+valgrind -s --leak-check=full --show-reachable=yes --error-limit=no --track-fds=yes --suppressions=minishell.supp ./minishell
+
 ls | grep ll && pwd | grep mini
 
 ls | grep ll || pwd | grep mini
@@ -10,5 +12,5 @@ cat /dev/urandom | head -n 5
 
 ls > file | cat < file | grep mini && ls | wc || env
 
-
+sleep 1 | sleep 1 | sleep 1 | sleep 1 | sleep 1
 

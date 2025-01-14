@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 00:02:42 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/13 19:30:53 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/14 11:04:29 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
 
 static char	*sigint_prompt(void)
 {
@@ -35,6 +34,7 @@ void	handle_sigint(int sig)
 	char	*tmp;
 
 	(void)sig;
+	
 	if (matching_mode(2) == true)
 	{
 		matching_mode(0);
