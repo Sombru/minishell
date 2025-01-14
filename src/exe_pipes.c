@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe_pipes.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 14:05:03 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/14 13:03:09 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/14 13:14:07 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,25 @@
 
 int	pipe_commands(t_command **commands, char **env)
 {
-	t_command 		*cmd_list;
+	t_command		*cmd_list;
 	t_descriptor	*descriptor;
-	int 			cmd_count;
-	int 			*pipes;
-	pid_t			 *pids;
+	int				cmd_count;
+	int				*pipes;
+	pid_t			*pids;
 	int				*status;
-	int 			ret;
-	int 			i;
-	int 			j;
+	int				ret;
+	int				i;
+	int				j;
 
 	cmd_count = 0;
 	ret = SUCCESS;
 	cmd_list = *commands;
-    while (cmd_list && cmd_list->atribute == CHILD)
-    {
-        cmd_count++;
-        cmd_list = cmd_list->next;
-    }
-    cmd_count++;
+	while (cmd_list && cmd_list->atribute == CHILD)
+	{
+		cmd_count++;
+		cmd_list = cmd_list->next;
+	}
+	cmd_count++;
 	if (DEBUG_MODE)
 		printf("Command count: %d\n", cmd_count);
 	pipes = malloc(sizeof(int) * 2 * (cmd_count - 1));
@@ -50,8 +50,7 @@ int	pipe_commands(t_command **commands, char **env)
 	{
 		pids[i] = fork();
 		if (pids[i] == 0)
-		{	
-			
+		{
 			if (handle_redirections(cmd_list, &descriptor, env) == SUCCESS)
 			{
 				if (i > 0)
