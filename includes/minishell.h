@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/14 13:03:05 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/14 15:17:37 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 # define C "\033[1;36m"   // bold cyan
 # define W "\033[1;37m"   // bold white
 
-# define DEBUG_MODE 0
+# define DEBUG_MODE 1
 # define MAX_ENV_SIZE 1024
 # define HEREDOC_TMP ".$%%$XxXxX_heredoc_tmp_XxXxX$%%$"
 # define STDIN "$%%$XXXXII<IIXXXX&%%$"
