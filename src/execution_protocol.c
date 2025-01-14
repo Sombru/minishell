@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   execution_protocol.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/14 11:34:33 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/14 13:04:59 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	handle_redirections(t_command *command, t_descriptor **descriptor, char **env)
+int	handle_redirections(t_command *command, t_descriptor **descriptor,
+		char **env)
 {
 	t_redirections	*redirections;
 	int				redir_status;
@@ -33,6 +34,7 @@ int	handle_redirections(t_command *command, t_descriptor **descriptor, char **en
 int	execution_protocol(t_command *commands, char **env)
 {
 	t_descriptor	*descriptor;
+
 	while (commands)
 	{
 		if (commands && commands->atribute == CHILD)
@@ -42,14 +44,16 @@ int	execution_protocol(t_command *commands, char **env)
 		}
 		else
 		{
-			if(handle_redirections(commands, &descriptor, env) == SUCCESS)
-				manage_exit_status(execute_command(commands->arguemnts, env, descriptor, commands));
+			if (handle_redirections(commands, &descriptor, env) == SUCCESS)
+				manage_exit_status(execute_command(commands->arguemnts, env,
+						descriptor, commands));
 			free_descriptor(descriptor);
 			commands = commands->next;
 		}
 		if (!commands)
 			break ;
-		if (commands && commands->prev->atribute == CMDOR && manage_exit_status(555) == 0)
+		if (commands && commands->prev->atribute == CMDOR
+			&& manage_exit_status(555) == 0)
 			break ;
 	}
 	return (SUCCESS);

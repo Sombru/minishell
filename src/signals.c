@@ -6,7 +6,7 @@
 /*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 00:02:42 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/14 11:04:29 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/14 13:05:12 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ void	handle_sigint(int sig)
 	char	*tmp;
 
 	(void)sig;
-	
 	if (matching_mode(2) == true)
 	{
 		matching_mode(0);

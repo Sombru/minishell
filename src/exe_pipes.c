@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe_pipes.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 14:05:03 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/14 11:37:47 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/14 13:03:09 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,11 +96,10 @@ int	pipe_commands(t_command **commands, char **env)
 	i = 0;
 	while (i < cmd_count)
 	{
-		waitpid(pids[i], &status[i], 0); //TODO store exit status to exit the exection_protocol loop on sigint (WIFSIGNALED)
-		printf("Process %d exited with status %d\n", pids[i - 1], WTERMSIG(status[i - 1]));
-		if (WTERMSIG(status[i - 1] != 0))
+		waitpid(pids[i], &status[i], 0);
+		if (WTERMSIG(status[i] != 0))
 		{
-			ret = manage_exit_status(WTERMSIG(status[i - 1]));
+			ret = manage_exit_status(WTERMSIG(status[i]));
 		}
 		i++;
 	}

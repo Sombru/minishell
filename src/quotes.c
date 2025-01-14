@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 01:34:37 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/13 14:46:50 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/14 13:05:25 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ char	*handle_unmatched_double_quotes(char *start, char **env)
 	while (matching_mode(2) == true)
 	{
 		buffer = readline("dquote> ");
-		if (!buffer ||matching_mode(2) == false)
+		if (!buffer || matching_mode(2) == false)
 			return (free(res), free(nl), NULL);
 		res = ft_strjoin_free(res, nl);
 		res = ft_strjoin_free(res, buffer);

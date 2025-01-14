@@ -6,7 +6,7 @@
 /*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 05:02:57 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/14 10:17:06 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/14 13:06:01 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ static int	no_file_error(char **args)
 	return (126);
 }
 
-static int exit_execve(pid_t pid, char *path, char **args)
+static int	exit_execve(pid_t pid, char *path, char **args)
 {
-	int status;
+	int	status;
 
 	signal(SIGINT, handle_sigint_child);
 	waitpid(pid, &status, 0);
@@ -77,7 +77,8 @@ char	*get_bin_path(char *command, char **env)
 	return (free(command), NULL);
 }
 
-int	execute_bin_command(char **args, char **env, t_descriptor *descriptor, t_command *commands)
+int	execute_bin_command(char **args, char **env, t_descriptor *descriptor,
+		t_command *commands)
 {
 	static char	*exit_args[] = {"exit", "126", NULL};
 	char		*path;
@@ -91,10 +92,10 @@ int	execute_bin_command(char **args, char **env, t_descriptor *descriptor, t_com
 		return (free(path), command_not_found(args));
 	pid = fork();
 	if (pid == 0)
-	{	
+	{
 		execve(path, args, env);
-		free(path); 
+		free(path);
 		ft_exit(exit_args, env, descriptor, commands);
 	}
-	return(exit_execve(pid, path, args));
+	return (exit_execve(pid, path, args));
 }

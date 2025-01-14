@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   redir_heredoc.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 15:44:07 by pkostura          #+#    #+#             */
-/*   Updated: 2025/01/14 00:21:31 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/14 13:05:22 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
 
 static int	terminate_heredoc(int fd, char *buffer, char *delimiter)
 {
@@ -25,8 +24,8 @@ static int	terminate_heredoc(int fd, char *buffer, char *delimiter)
 		ft_putstr_fd(RED "minishell:" RST DOC_EOF RED "`", STDERR_FILENO);
 		tmp = ft_strjoin(delimiter, "'\n" RST);
 		ft_putstr_fd(tmp, STDERR_FILENO);
-		free(tmp);	
-		return (input_redirection(HEREDOC_TMP));		
+		free(tmp);
+		return (input_redirection(HEREDOC_TMP));
 	}
 	unlink(HEREDOC_TMP);
 	manage_exit_status(1);
