@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe_pipes.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 14:05:03 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/14 11:11:54 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/14 11:37:47 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,13 @@ int	pipe_commands(t_command **commands, char **env)
 	int 			cmd_count;
 	int 			*pipes;
 	pid_t			 *pids;
+	int				*status;
+	int 			ret;
 	int 			i;
 	int 			j;
 
 	cmd_count = 0;
+	ret = SUCCESS;
 	cmd_list = *commands;
     while (cmd_list && cmd_list->atribute == CHILD)
     {
@@ -33,6 +36,7 @@ int	pipe_commands(t_command **commands, char **env)
 	if (DEBUG_MODE)
 		printf("Command count: %d\n", cmd_count);
 	pipes = malloc(sizeof(int) * 2 * (cmd_count - 1));
+	status = malloc(sizeof(int) * 2 * (cmd_count));
 	pids = malloc(sizeof(pid_t) * cmd_count);
 	i = 0;
 	while (i < cmd_count - 1)
@@ -65,6 +69,7 @@ int	pipe_commands(t_command **commands, char **env)
 				free_commands(cmd_list);
 				free(pipes);
 				free(pids);
+				free(status);
 				free_descriptor(descriptor);
 				exit(manage_exit_status(555));
 			}
@@ -74,6 +79,7 @@ int	pipe_commands(t_command **commands, char **env)
 				free_commands(cmd_list);
 				free(pipes);
 				free(pids);
+				free(status);
 				free_descriptor(descriptor);
 				exit(manage_exit_status(555));
 			}
@@ -89,9 +95,18 @@ int	pipe_commands(t_command **commands, char **env)
 		close(pipes[i++]);
 	i = 0;
 	while (i < cmd_count)
-		waitpid(pids[i++], NULL, 0); //TODO store exit status to exit the exection_protocol loop on sigint (WIFSIGNALED)
+	{
+		waitpid(pids[i], &status[i], 0); //TODO store exit status to exit the exection_protocol loop on sigint (WIFSIGNALED)
+		printf("Process %d exited with status %d\n", pids[i - 1], WTERMSIG(status[i - 1]));
+		if (WTERMSIG(status[i - 1] != 0))
+		{
+			ret = manage_exit_status(WTERMSIG(status[i - 1]));
+		}
+		i++;
+	}
 	free(pipes);
 	free(pids);
+	free(status);
 	*commands = cmd_list;
-	return (0);
+	return (manage_exit_status(ret));
 }

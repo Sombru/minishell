@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_protocol.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 00:47:46 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/14 10:10:19 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/14 11:34:33 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ int	execution_protocol(t_command *commands, char **env)
 	{
 		if (commands && commands->atribute == CHILD)
 		{
-			pipe_commands(&commands, env);
+			if (pipe_commands(&commands, env) != 0)
+				break ;
 		}
 		else
 		{
