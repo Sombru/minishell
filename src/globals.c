@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   globals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 14:32:54 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/13 14:48:35 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/15 12:01:28 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,14 @@ bool	matching_mode(int set_flag)
 		return (matching_mode);
 	matching_mode = set_flag;
 	return (matching_mode);
+}
+
+bool	no_nl(int set_flag)
+{
+	static bool	no_nl = 0;
+
+	if (set_flag > 1)
+		return (no_nl);
+	no_nl = set_flag;
+	return (no_nl);
 }

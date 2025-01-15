@@ -6,7 +6,7 @@
 /*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 05:02:57 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/14 13:06:01 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/15 12:50:18 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static int	exit_execve(pid_t pid, char *path, char **args)
 {
 	int	status;
 
-	signal(SIGINT, handle_sigint_child);
+	signal(SIGINT, handle_sigint_parent);
 	waitpid(pid, &status, 0);
 	if (WTERMSIG(status))
 		return (free(path), WTERMSIG(status));

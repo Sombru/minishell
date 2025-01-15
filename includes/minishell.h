@@ -6,7 +6,7 @@
 /*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/14 13:03:05 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/15 12:01:41 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,12 +119,22 @@ typedef struct s_descriptors
 	int						prev_fd;
 }							t_descriptor;
 
+typedef struct s_pipe_resources
+{
+	int						*pipes;
+	pid_t					*pids;
+	int						*status;
+	int						cmd_count;
+	int						current_cmd;
+}							t_pipe_resources;
+
 //============================== main ==============================
 
 //============================== globals ===========================
 
 int							manage_exit_status(int set_flag);
-bool 						matching_mode(int set_flag);
+bool						matching_mode(int set_flag);
+bool						no_nl(int set_flag);
 
 //============================== parsing ===========================
 
@@ -162,20 +172,29 @@ char						*ft_getenv(const char *name, char **env);
 
 //============================== execution_protocol ================
 
-int							handle_redirections(t_command *command, t_descriptor **descriptor, char **env);
+int							handle_redirections(t_command *command,
+								t_descriptor **descriptor, char **env);
 int							execution_protocol(t_command *commands, char **env);
 int							current_command(t_command *command, char **env);
-int							execute_command(char **args, char **env, t_descriptor *descriptor, t_command *commands);
+int							execute_command(char **args, char **env,
+								t_descriptor *descriptor, t_command *commands);
 t_descriptor				*get_descriptors(void);
 void						free_descriptor(t_descriptor *descriptor);
 
 //============================== bin ===============================
 
-int							execute_bin_command(char **args, char **env, t_descriptor *descriptor, t_command *commands);
+int							execute_bin_command(char **args, char **env,
+								t_descriptor *descriptor, t_command *commands);
 
 //============================== pipes =============================
 
 int							pipe_commands(t_command **commands, char **env);
+int							count_child_commands(t_command *cmd_list);
+void						free_resources(t_pipe_resources *res);
+void						create_pipes(t_pipe_resources *res);
+void						close_pipes(t_pipe_resources *res);
+void						free_command_resources(char **env,
+								t_command *cmd_list, t_descriptor *descriptor);
 
 //============================== commands ==========================
 
@@ -185,7 +204,8 @@ int							ft_pwd(char **args);
 int							ft_export(char **args, char **env);
 int							ft_unset(char **args, char **env);
 int							ft_env(char **args, char **env);
-int							ft_exit(char **args, char **env, t_descriptor *descriptor, t_command *commands);
+int							ft_exit(char **args, char **env,
+								t_descriptor *descriptor, t_command *commands);
 
 //============================== tokenization ======================
 
@@ -218,7 +238,7 @@ void						print_commands(t_command *commands);
 void						handle_signals(void);
 void						handle_sigquit(int sig);
 void						handle_sigint(int sig);
-void						handle_sigint_child(int sig);
+void						handle_sigint_parent(int sig);
 
 //============================== quotes ============================
 

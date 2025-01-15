@@ -6,7 +6,7 @@
 /*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 11:24:39 by pkostura          #+#    #+#             */
-/*   Updated: 2025/01/14 10:16:30 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/15 10:08:00 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,6 @@ static void	process_input(char *input, char **env)
 	if (tokens)
 	{
 		free_tokens(tokens);
-		// if (DEBUG_MODE)
-		// {
-		// 	print_commands(commands);
-		// }
 		execution_protocol(commands, env);
 		free_commands(commands);
 		free(input);

@@ -21,7 +21,7 @@ SRC			= main.c \
 			  bool.c \
 			  debug.c \
 			  env.c \
-			  execution_protocol.c exec_utils.c exe_pipes.c \
+			  execution_protocol.c exe_utils.c exe_pipes.c exe_pipe_utils.c \
 			  input.c \
 			  redirections.c redirections_apply.c redir_heredoc.c \
 			  signals.c \

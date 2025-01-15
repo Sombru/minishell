@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:11:55 by pkostura          #+#    #+#             */
-/*   Updated: 2025/01/13 13:42:56 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/15 10:08:11 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ static int	handle_exit_arguments(char **args, int *exit_code)
 	return (SUCCESS);
 }
 
-int	ft_exit(char **args, char **env, t_descriptor *descriptor, t_command *commands)
+int	ft_exit(char **args, char **env,
+		t_descriptor *descriptor, t_command *commands)
 {
 	int	exit_code;
 

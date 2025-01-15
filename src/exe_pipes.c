@@ -3,108 +3,94 @@
 /*                                                        :::      ::::::::   */
 /*   exe_pipes.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 14:05:03 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/14 13:14:07 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/15 13:05:24 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
+static void	setup_pipes(t_pipe_resources *res, int i)
+{
+	if (i > 0)
+		dup2(res->pipes[(i - 1) * 2], STDIN_FILENO);
+	if (i < res->cmd_count - 1)
+		dup2(res->pipes[i * 2 + 1], STDOUT_FILENO);
+}
+
+static void	wait_for_children(t_pipe_resources *res, int *ans)
+{
+	int	i;
+
+	i = 0;
+	while (i < res->cmd_count)
+	{
+		waitpid(res->pids[i], &res->status[i], 0);
+		if (WTERMSIG(res->status[i]) != 0)
+			*ans = manage_exit_status(WTERMSIG(res->status[i]));
+		i++;
+	}
+}
+
+static void	handle_child_process(t_pipe_resources *res, t_command *cmd_list,
+		char **env)
+{
+	t_descriptor	*descriptor;
+
+	no_nl(true);
+	setup_pipes(res, res->current_cmd);
+	if (handle_redirections(cmd_list, &descriptor, env) == SUCCESS)
+	{
+		close_pipes(res);
+		execute_command(cmd_list->arguemnts, env, descriptor, cmd_list);
+		free_command_resources(env, cmd_list, descriptor);
+		free_resources(res);
+	}
+	else
+	{
+		close_pipes(res);
+		free_command_resources(env, cmd_list, descriptor);
+		free_resources(res);
+	}
+	exit(manage_exit_status(555));
+}
+
+static void	initialize_pipe_resources(t_pipe_resources *res,
+		t_command *cmd_list)
+{
+	res->cmd_count = count_child_commands(cmd_list) + 1;
+	res->pipes = malloc(sizeof(int) * 2 * (res->cmd_count - 1));
+	res->status = malloc(sizeof(int) * 2 * (res->cmd_count));
+	res->pids = malloc(sizeof(pid_t) * res->cmd_count);
+	res->current_cmd = 0;
+}
+
 int	pipe_commands(t_command **commands, char **env)
 {
-	t_command		*cmd_list;
-	t_descriptor	*descriptor;
-	int				cmd_count;
-	int				*pipes;
-	pid_t			*pids;
-	int				*status;
-	int				ret;
-	int				i;
-	int				j;
+	t_command			*cmd_list;
+	t_pipe_resources	res;
+	int					ans;
 
-	cmd_count = 0;
-	ret = SUCCESS;
+	ans = SUCCESS;
 	cmd_list = *commands;
-	while (cmd_list && cmd_list->atribute == CHILD)
-	{
-		cmd_count++;
-		cmd_list = cmd_list->next;
-	}
-	cmd_count++;
-	if (DEBUG_MODE)
-		printf("Command count: %d\n", cmd_count);
-	pipes = malloc(sizeof(int) * 2 * (cmd_count - 1));
-	status = malloc(sizeof(int) * 2 * (cmd_count));
-	pids = malloc(sizeof(pid_t) * cmd_count);
-	i = 0;
-	while (i < cmd_count - 1)
-	{
-		pipe(pipes + i * 2);
-		i++;
-	}
-	i = 0;
+	initialize_pipe_resources(&res, cmd_list);
+	create_pipes(&res);
 	cmd_list = *commands;
-	while (cmd_list && i < cmd_count)
+	while (cmd_list && res.current_cmd < res.cmd_count)
 	{
-		pids[i] = fork();
-		if (pids[i] == 0)
-		{
-			if (handle_redirections(cmd_list, &descriptor, env) == SUCCESS)
-			{
-				if (i > 0)
-					dup2(pipes[(i - 1) * 2], STDIN_FILENO);
-				if (i < cmd_count - 1)
-					dup2(pipes[i * 2 + 1], STDOUT_FILENO);
-				j = 0;
-				while (j < 2 * (cmd_count - 1))
-				{
-					close(pipes[j]);
-					j++;
-				}
-				execute_command(cmd_list->arguemnts, env, descriptor, cmd_list);
-				ft_free_array(env);
-				free_commands(cmd_list);
-				free(pipes);
-				free(pids);
-				free(status);
-				free_descriptor(descriptor);
-				exit(manage_exit_status(555));
-			}
-			else
-			{
-				ft_free_array(env);
-				free_commands(cmd_list);
-				free(pipes);
-				free(pids);
-				free(status);
-				free_descriptor(descriptor);
-				exit(manage_exit_status(555));
-			}
-		}
-		if (DEBUG_MODE)
-			printf("Forked process with PID: %d\n", pids[i]);
+		res.pids[res.current_cmd] = fork();
+		if (res.pids[res.current_cmd] == 0)
+			handle_child_process(&res, cmd_list, env);
 		cmd_list = cmd_list->next;
-		i++;
+		res.current_cmd++;
 	}
-	i = 0;
-	signal(SIGINT, handle_sigint_child);
-	while (i < 2 * (cmd_count - 1))
-		close(pipes[i++]);
-	i = 0;
-	while (i < cmd_count)
-	{
-		waitpid(pids[i], &status[i], 0);
-		if (WTERMSIG(status[i] != 0))
-		{
-			ret = manage_exit_status(WTERMSIG(status[i]));
-		}
-		i++;
-	}
-	free(pipes);
-	free(pids);
-	free(status);
+	signal(SIGINT, handle_sigint_parent);
+	close_pipes(&res);
+	wait_for_children(&res, &ans);
+	no_nl(false);
+	free_resources(&res);
 	*commands = cmd_list;
-	return (manage_exit_status(ret));
+	return (manage_exit_status(ans));
 }

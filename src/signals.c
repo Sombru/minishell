@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 00:02:42 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/14 13:14:57 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/15 12:34:46 by nspalevi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,15 @@ void	handle_sigint(int sig)
 	rl_redisplay();
 }
 
-void	handle_sigint_child(int sig)
+void	handle_sigint_parent(int sig)
 {
 	(void)sig;
-	write(STDERR_FILENO, "\n", 1);
+	if (no_nl(2) == true)
+	{
+		manage_exit_status(130);
+	}
+	if (no_nl(2) == false)
+		write(STDERR_FILENO, "\n", 1);
 }
 
 void	handle_signals(void)
