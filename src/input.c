@@ -6,7 +6,7 @@
 /*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/02 12:48:13 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/09 18:59:44 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/29 13:16:07 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*display_prompt(void)
 	char	*exit_status;
 	char	*colored_status;
 
-	exit_status = ft_itoa(manage_exit_status(555));
+	exit_status = ft_itoa(g_status(555));
 	if (ft_strcmp(exit_status, "0") == 0)
 		colored_status = ft_strjoin(G, exit_status);
 	else

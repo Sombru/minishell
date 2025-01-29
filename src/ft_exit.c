@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:11:55 by pkostura          #+#    #+#             */
-/*   Updated: 2025/01/15 10:08:11 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/29 13:16:07 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	ft_exit(char **args, char **env,
 {
 	int	exit_code;
 
-	exit_code = manage_exit_status(555);
+	exit_code = g_status(555);
 	if (handle_exit_arguments(args, &exit_code))
 		return (FAILURE);
 	if (DEBUG_MODE)

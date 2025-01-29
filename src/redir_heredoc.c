@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_heredoc.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 15:44:07 by pkostura          #+#    #+#             */
-/*   Updated: 2025/01/14 13:05:22 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/29 13:16:07 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	terminate_heredoc(int fd, char *buffer, char *delimiter)
 		return (input_redirection(HEREDOC_TMP));
 	}
 	unlink(HEREDOC_TMP);
-	manage_exit_status(1);
+	g_status(1);
 	return (FAILURE);
 }
 
@@ -56,7 +56,7 @@ int	heredoc_redirection(char *delimiter, char **env)
 		write(fd, buffer, ft_strlen(buffer));
 		free(buffer);
 	}
-	manage_exit_status(0);
+	g_status(0);
 	close(fd);
 	return (input_redirection(HEREDOC_TMP));
 }

@@ -6,7 +6,7 @@
 /*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 14:05:03 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/29 10:30:57 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/29 13:34:07 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,24 @@ static void	setup_pipes(t_pipe_resources *piping, int i)
 int	wait_for_children(t_pipe_resources *piping)
 {
 	int	status;
+	int	termiate;
 	int	i;
 
 	status = 0;
+	termiate = 0;
 	i = 0;
 	while (i < piping->cmd_count)
 	{
 		waitpid(piping->pids[i], &piping->status[i], 0);
 		piping->status[i] = WEXITSTATUS(piping->status[i]);
+		if (piping->status[i] != 0)
+			status = piping->status[i];
 		if (piping->status[i] == 130)
-			status = 130;
+			termiate = 130;
 		i++;
 	}
+	if (termiate)
+		return (termiate);
 	return (status);
 }
 
@@ -48,7 +54,7 @@ static void	handle_child_process(t_pipe_resources *piping, t_command *cmd_list,
 	if (handle_redirections(cmd_list, &descriptor, env) == SUCCESS)
 	{
 		close_pipes(piping);
-		manage_exit_status(execute_command(cmd_list->arguemnts, env, descriptor,
+		g_status(execute_command(cmd_list->arguemnts, env, descriptor,
 				cmd_list));
 		free_command_resources(env, cmd_list, descriptor);
 		free_resources(piping);
@@ -59,7 +65,7 @@ static void	handle_child_process(t_pipe_resources *piping, t_command *cmd_list,
 		free_command_resources(env, cmd_list, descriptor);
 		free_resources(piping);
 	}
-	exit(manage_exit_status(555));
+	exit(g_status(555));
 }
 
 static void	initialize_pipe_resources(t_pipe_resources *piping,
@@ -96,5 +102,5 @@ int	pipe_commands(t_command **commands, char **env)
 	no_nl(false);
 	free_resources(&piping);
 	*commands = cmd_list;
-	return (manage_exit_status(status));
+	return (status);
 }

@@ -6,7 +6,7 @@
 /*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 14:32:54 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/29 10:31:06 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/29 13:16:07 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 // flag: 0 on succes
 // flag: 1 on error
 // flag: 555 for current value
-int	manage_exit_status(int set_flag)
+int	g_status(int set_flag)
 {
 	static int	exit_status = 0;
 

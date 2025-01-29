@@ -6,7 +6,7 @@
 /*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/29 10:33:02 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/29 13:16:07 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ typedef struct s_pipe_resources
 
 //============================== globals ===========================
 
-int							manage_exit_status(int set_flag);
+int							g_status(int set_flag);
 bool						matching_mode(int set_flag);
 bool						no_nl(int set_flag);
 

@@ -6,7 +6,7 @@
 /*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 01:41:43 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/09 19:35:06 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/29 13:16:07 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ char	*handle_var(char **input, char **env)
 	if (**input == '?')
 	{
 		(*input)++;
-		return (ft_itoa(manage_exit_status(555)));
+		return (ft_itoa(g_status(555)));
 	}
 	if (**input == '\0' || ft_isspace(**input) || !ft_isalnum(**input))
 		return (ft_strdup("$"));

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 00:02:42 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/15 12:34:46 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/29 13:16:07 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static char	*sigint_prompt(void)
 	char	*exit_status;
 	char	*colored_status;
 
-	exit_status = ft_itoa(manage_exit_status(555));
+	exit_status = ft_itoa(g_status(555));
 	if (ft_strcmp(exit_status, "0") == 0)
 		colored_status = ft_strjoin(G, exit_status);
 	else
@@ -55,7 +55,7 @@ void	handle_sigint_parent(int sig)
 	(void)sig;
 	if (no_nl(2) == true)
 	{
-		manage_exit_status(130);
+		g_status(130);
 	}
 	if (no_nl(2) == false)
 		write(STDERR_FILENO, "\n", 1);

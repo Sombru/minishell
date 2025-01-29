@@ -6,7 +6,7 @@
 /*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 05:55:28 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/09 15:44:13 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/29 13:16:07 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,17 +46,17 @@ int	output_redirection(char *destination)
 	if (fd == -1)
 	{
 		perror("minishell");
-		manage_exit_status(1);
+		g_status(1);
 		return (FAILURE);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		perror("dup2");
 		close(fd);
-		manage_exit_status(1);
+		g_status(1);
 		return (FAILURE);
 	}
-	manage_exit_status(0);
+	g_status(0);
 	close(fd);
 	return (SUCCESS);
 }
@@ -71,17 +71,17 @@ int	input_redirection(char *destination)
 	if (fd == -1)
 	{
 		perror("minishell");
-		manage_exit_status(1);
+		g_status(1);
 		return (FAILURE);
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
 		perror("dup2");
 		close(fd);
-		manage_exit_status(1);
+		g_status(1);
 		return (FAILURE);
 	}
-	manage_exit_status(0);
+	g_status(0);
 	close(fd);
 	return (SUCCESS);
 }
@@ -96,17 +96,17 @@ int	append_redirection(char *destination)
 	if (fd == -1)
 	{
 		perror("minishell");
-		manage_exit_status(1);
+		g_status(1);
 		return (FAILURE);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		perror("dup2");
 		close(fd);
-		manage_exit_status(1);
+		g_status(1);
 		return (FAILURE);
 	}
-	manage_exit_status(0);
+	g_status(0);
 	close(fd);
 	return (SUCCESS);
 }
