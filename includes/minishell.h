@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/15 12:01:41 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/29 08:35:49 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@
 # define SYNTAX_ERR "syntax error near unexpected token"
 # define DOC_EOF " heredoc terimnated by EOF, wanted: "
 # define COMMAND_NOT_FOUND 127
+# define SEG_FAULT 139
+# define NO_FILE_ERROR 126
 # define SUCCESS 0
 # define FAILURE 1
 # define ECHO_CMD "echo"
@@ -70,7 +72,7 @@ typedef enum e_token_var // enum for token types
 	TOKEN_HEREDOC, // 3 <<
 	TOKEN_PIPE, // 4 |
 	TOKEN_STR, // 5
-	TOKEN_CMDAND, // 6 &&
+	TOKEN_CMDAND, // 6 && ;
 	TOKEN_CMDOR, // 7 ||
 }							t_token_var;
 
@@ -181,6 +183,12 @@ int							execute_command(char **args, char **env,
 t_descriptor				*get_descriptors(void);
 void						free_descriptor(t_descriptor *descriptor);
 
+//========================= exit_messages =========================
+
+int							no_file_error(char **args);
+int							command_not_found(char **args);
+int							seg_fault();
+
 //============================== bin ===============================
 
 int							execute_bin_command(char **args, char **env,
@@ -190,9 +198,9 @@ int							execute_bin_command(char **args, char **env,
 
 int							pipe_commands(t_command **commands, char **env);
 int							count_child_commands(t_command *cmd_list);
-void						free_resources(t_pipe_resources *res);
-void						create_pipes(t_pipe_resources *res);
-void						close_pipes(t_pipe_resources *res);
+void						free_resources(t_pipe_resources *piping);
+void						create_pipes(t_pipe_resources *piping);
+void						close_pipes(t_pipe_resources *piping);
 void						free_command_resources(char **env,
 								t_command *cmd_list, t_descriptor *descriptor);
 
@@ -246,7 +254,7 @@ char						*handle_single_quotes(char **input);
 char						*handle_unmatched_single_quotes(char *start);
 char						*handle_double_quotes(char **input, char **env);
 char						*handle_double_quotes_var(char **input, char **env,
-								char *res);
+								char *piping);
 char						*handle_unmatched_double_quotes(char *start,
 								char **env);
 

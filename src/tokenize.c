@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 23:44:49 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/09 19:35:06 by pkostura         ###   ########.fr       */
+/*   Updated: 2025/01/29 08:35:03 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,11 @@ static void	handle_pipe_and_logical_operators(char **input, t_token **tokens)
 			add_token(tokens, create_token(TOKEN_PIPE, "|"));
 			(*input)++;
 		}
+	}
+	else if (**input == ';')
+	{
+		add_token(tokens, create_token(TOKEN_CMDAND, ";"));
+		(*input)++;
 	}
 	else if (**input == '&' && *(*input + 1) == '&')
 	{
@@ -113,7 +118,7 @@ t_token	*ft_tokenize(char *input, char **env)
 	{
 		if (ft_isspace(*input))
 			input++;
-		else if (*input == '|' || (*input == '&' && *(input + 1) == '&'))
+		else if (*input == '|' || (*input == '&' && *(input + 1) == '&') || *input == ';')
 			handle_pipe_and_logical_operators(&input, &tokens);
 		else if (*input == '>' || *input == '<')
 			handle_redirections_operators(&input, &tokens);

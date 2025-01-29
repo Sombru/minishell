@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 01:34:37 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/14 13:05:25 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/29 06:30:06 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,20 @@
 char	*handle_single_quotes(char **input)
 {
 	char	*start;
-	char	*res;
+	char	*piping;
 	char	*temp;
 
 	(*input)++;
 	start = *input;
-	res = NULL;
+	piping = NULL;
 	while (**input && **input != '\'')
 		(*input)++;
 	if (**input == '\'')
 	{
 		temp = ft_strndup(start, *input - start);
-		res = ft_strjoin_free(res, temp);
+		piping = ft_strjoin_free(piping, temp);
 		(*input)++;
-		return (res);
+		return (piping);
 	}
 	else
 		return (handle_unmatched_single_quotes(start));
@@ -38,42 +38,42 @@ char	*handle_unmatched_single_quotes(char *start)
 {
 	char	*buffer;
 	char	*nl;
-	char	*res;
+	char	*piping;
 
-	res = ft_strdup(start);
+	piping = ft_strdup(start);
 	nl = ft_strdup("\n");
 	matching_mode(true);
 	while (matching_mode(2) == true)
 	{
 		buffer = readline("quote> ");
 		if (!buffer || matching_mode(2) == false)
-			return (free(res), free(nl), NULL);
-		res = ft_strjoin_free(res, nl);
-		res = ft_strjoin_free(res, buffer);
-		if (ft_strchr(res, '\''))
+			return (free(piping), free(nl), NULL);
+		piping = ft_strjoin_free(piping, nl);
+		piping = ft_strjoin_free(piping, buffer);
+		if (ft_strchr(piping, '\''))
 		{
-			res = ft_remove_last_char(res, '\'');
+			piping = ft_remove_last_char(piping, '\'');
 			break ;
 		}
 		nl = ft_strdup("\n");
 	}
-	return (res);
+	return (piping);
 }
 
 char	*handle_double_quotes(char **input, char **env)
 {
 	char	*start;
-	char	*res;
+	char	*piping;
 
 	(*input)++;
 	start = *input;
-	res = NULL;
+	piping = NULL;
 	while (**input && **input != '"')
 	{
 		if (**input == '$')
 		{
-			res = ft_strjoin_free(res, ft_strndup(start, *input - start));
-			res = handle_double_quotes_var(input, env, res);
+			piping = ft_strjoin_free(piping, ft_strndup(start, *input - start));
+			piping = handle_double_quotes_var(input, env, piping);
 			start = *input;
 		}
 		else
@@ -81,47 +81,47 @@ char	*handle_double_quotes(char **input, char **env)
 	}
 	if (**input == '"')
 	{
-		res = ft_strjoin_free(res, ft_strndup(start, *input - start));
+		piping = ft_strjoin_free(piping, ft_strndup(start, *input - start));
 		(*input)++;
-		return (res);
+		return (piping);
 	}
 	else
 		return (handle_unmatched_double_quotes(start, env));
 }
 
-char	*handle_double_quotes_var(char **input, char **env, char *res)
+char	*handle_double_quotes_var(char **input, char **env, char *piping)
 {
 	char	*var_value;
 
 	var_value = handle_var(input, env);
 	if (var_value)
-		res = ft_strjoin_free(res, var_value);
-	return (res);
+		piping = ft_strjoin_free(piping, var_value);
+	return (piping);
 }
 
 char	*handle_unmatched_double_quotes(char *start, char **env)
 {
 	char	*buffer;
 	char	*nl;
-	char	*res;
+	char	*piping;
 
-	res = ft_strdup(start);
+	piping = ft_strdup(start);
 	nl = ft_strdup("\n");
 	matching_mode(true);
 	while (matching_mode(2) == true)
 	{
 		buffer = readline("dquote> ");
 		if (!buffer || matching_mode(2) == false)
-			return (free(res), free(nl), NULL);
-		res = ft_strjoin_free(res, nl);
-		res = ft_strjoin_free(res, buffer);
-		res = handle_var_heredoc(&res, env);
-		if (ft_strchr(res, '"'))
+			return (free(piping), free(nl), NULL);
+		piping = ft_strjoin_free(piping, nl);
+		piping = ft_strjoin_free(piping, buffer);
+		piping = handle_var_heredoc(&piping, env);
+		if (ft_strchr(piping, '"'))
 		{
-			res = ft_remove_last_char(res, '"');
+			piping = ft_remove_last_char(piping, '"');
 			break ;
 		}
 		nl = ft_strdup("\n");
 	}
-	return (res);
+	return (piping);
 }

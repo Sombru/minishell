@@ -3,50 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bin.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 05:02:57 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/15 12:50:18 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/29 08:01:50 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int	command_not_found(char **args)
+static int	exit_execve(pid_t pid, char **args)
 {
-	char	*tmp;
+    int	status;
 
-	ft_putstr_fd(RED "minishell:" RST " command not found: " RED "`",
-		STDERR_FILENO);
-	tmp = ft_strjoin(args[0], "'\n" RST);
-	ft_putstr_fd(tmp, STDERR_FILENO);
-	free(tmp);
-	return (COMMAND_NOT_FOUND);
-}
-
-static int	no_file_error(char **args)
-{
-	char	*tmp;
-
-	ft_putstr_fd(RED "minishell:" RST " No such file or directory: " RED "`",
-		STDERR_FILENO);
-	tmp = ft_strjoin(args[0], "'\n" RST);
-	ft_putstr_fd(tmp, STDERR_FILENO);
-	free(tmp);
-	return (126);
-}
-
-static int	exit_execve(pid_t pid, char *path, char **args)
-{
-	int	status;
-
-	signal(SIGINT, handle_sigint_parent);
-	waitpid(pid, &status, 0);
-	if (WTERMSIG(status))
-		return (free(path), WTERMSIG(status));
-	if (WEXITSTATUS(status) == 126)
-		return (free(path), no_file_error(args));
-	return (free(path), WEXITSTATUS(status));
+    signal(SIGINT, handle_sigint_parent);
+    waitpid(pid, &status, 0);
+    if (WIFSIGNALED(status))
+    {
+        if (WTERMSIG(status) == SIGSEGV)
+            return ( seg_fault());
+        return (128 + WTERMSIG(status));
+    }
+    if (WIFEXITED(status))
+    {
+        if (WEXITSTATUS(status) == 126)
+            return (no_file_error(args));
+        return (WEXITSTATUS(status));
+    }
+    return (status);
 }
 
 char	*get_bin_path(char *command, char **env)
@@ -89,7 +73,7 @@ int	execute_bin_command(char **args, char **env, t_descriptor *descriptor,
 	else
 		path = get_bin_path(ft_strdup(args[0]), env);
 	if (path == NULL)
-		return (free(path), command_not_found(args));
+		return (command_not_found(args));
 	pid = fork();
 	if (pid == 0)
 	{
@@ -97,5 +81,6 @@ int	execute_bin_command(char **args, char **env, t_descriptor *descriptor,
 		free(path);
 		ft_exit(exit_args, env, descriptor, commands);
 	}
-	return (exit_execve(pid, path, args));
+	free(path);
+	return (exit_execve(pid, args));
 }

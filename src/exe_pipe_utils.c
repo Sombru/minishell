@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe_pipe_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspalevi <nspalevi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 10:01:36 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/15 10:07:48 by nspalevi         ###   ########.fr       */
+/*   Updated: 2025/01/29 07:20:51 by sombru           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,33 +25,33 @@ int	count_child_commands(t_command *cmd_list)
 	return (count);
 }
 
-void	free_resources(t_pipe_resources *res)
+void	free_resources(t_pipe_resources *piping)
 {
-	free(res->pipes);
-	free(res->pids);
-	free(res->status);
+	free(piping->pipes);
+	free(piping->pids);
+	free(piping->status);
 }
 
-void	create_pipes(t_pipe_resources *res)
+void	create_pipes(t_pipe_resources *piping)
 {
 	int	i;
 
 	i = 0;
-	while (i < res->cmd_count - 1)
+	while (i < piping->cmd_count - 1)
 	{
-		pipe(res->pipes + i * 2);
+		pipe(piping->pipes + i * 2);
 		i++;
 	}
 }
 
-void	close_pipes(t_pipe_resources *res)
+void	close_pipes(t_pipe_resources *piping)
 {
 	int	i;
 
 	i = 0;
-	while (i < 2 * (res->cmd_count - 1))
+	while (i < 2 * (piping->cmd_count - 1))
 	{
-		close(res->pipes[i]);
+		close(piping->pipes[i]);
 		i++;
 	}
 }
