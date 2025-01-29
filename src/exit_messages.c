@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit_messages.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 07:05:06 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/29 07:14:55 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/29 10:32:28 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ int	no_file_error(char **args)
 	return (NO_FILE_ERROR);
 }
 
-int seg_fault()
+int	seg_fault(void)
 {
 	ft_putstr_fd("Segmentation fault (core dumped)\n", STDERR_FILENO);
-	return(SEG_FAULT);
+	return (SEG_FAULT);
 }

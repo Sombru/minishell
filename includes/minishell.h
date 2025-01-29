@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/29 08:35:49 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/29 10:33:02 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +187,7 @@ void						free_descriptor(t_descriptor *descriptor);
 
 int							no_file_error(char **args);
 int							command_not_found(char **args);
-int							seg_fault();
+int							seg_fault(void);
 
 //============================== bin ===============================
 

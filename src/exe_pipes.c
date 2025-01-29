@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe_pipes.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 14:05:03 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/29 07:40:28 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/29 10:30:57 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	wait_for_children(t_pipe_resources *piping)
 			status = 130;
 		i++;
 	}
-	return(status);
+	return (status);
 }
 
 static void	handle_child_process(t_pipe_resources *piping, t_command *cmd_list,
@@ -48,7 +48,8 @@ static void	handle_child_process(t_pipe_resources *piping, t_command *cmd_list,
 	if (handle_redirections(cmd_list, &descriptor, env) == SUCCESS)
 	{
 		close_pipes(piping);
-		manage_exit_status(execute_command(cmd_list->arguemnts, env, descriptor, cmd_list));
+		manage_exit_status(execute_command(cmd_list->arguemnts, env, descriptor,
+				cmd_list));
 		free_command_resources(env, cmd_list, descriptor);
 		free_resources(piping);
 	}

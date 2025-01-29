@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bin.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sombru <sombru@student.42.fr>              +#+  +:+       +#+        */
+/*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 05:02:57 by sombru            #+#    #+#             */
-/*   Updated: 2025/01/29 08:01:50 by sombru           ###   ########.fr       */
+/*   Updated: 2025/01/29 10:30:35 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,23 @@
 
 static int	exit_execve(pid_t pid, char **args)
 {
-    int	status;
+	int	status;
 
-    signal(SIGINT, handle_sigint_parent);
-    waitpid(pid, &status, 0);
-    if (WIFSIGNALED(status))
-    {
-        if (WTERMSIG(status) == SIGSEGV)
-            return ( seg_fault());
-        return (128 + WTERMSIG(status));
-    }
-    if (WIFEXITED(status))
-    {
-        if (WEXITSTATUS(status) == 126)
-            return (no_file_error(args));
-        return (WEXITSTATUS(status));
-    }
-    return (status);
+	signal(SIGINT, handle_sigint_parent);
+	waitpid(pid, &status, 0);
+	if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == SIGSEGV)
+			return (seg_fault());
+		return (128 + WTERMSIG(status));
+	}
+	if (WIFEXITED(status))
+	{
+		if (WEXITSTATUS(status) == 126)
+			return (no_file_error(args));
+		return (WEXITSTATUS(status));
+	}
+	return (status);
 }
 
 char	*get_bin_path(char *command, char **env)
