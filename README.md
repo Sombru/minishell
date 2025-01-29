@@ -1,12 +1,11 @@
 # minishell$>
 ## Overview
 Minishell is a simple shell program written in C that mimics the basic functionality of a Unix shell. It provides a user-friendly interface for executing commands, managing environment variables, handling redirections, and piping.
-![Screenshot from 2024-12-26 16-43-45](https://github.com/user-attachments/assets/7ab752eb-65d6-417d-be9c-72ebfb54910c)
+![Screenshot from 2025-01-29 10-44-45](https://github.com/user-attachments/assets/f7b3dede-f525-425b-8d67-3295cb3718eb)
 ## Features
 ### Built-in Functions
 - **echo**: Supports the `-n` option to suppress the trailing newline.
 - **cd**: Changes the current directory using relative or absolute paths.
-- **pwd**: Prints the current working directory.
 - **pwd**: Prints the current working directory.
 - **export**: Sets environment variables.
 - **unset**: Unsets environment variables.
