@@ -14,3 +14,4 @@ ls > file | cat < file | grep mini && ls | wc || env
 
 sleep 1 | sleep 1 | sleep 1 | sleep 1 | sleep 1
 
+> file echo message >> file message2 >> file messgae3 messgae4
