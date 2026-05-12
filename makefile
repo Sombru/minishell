@@ -6,32 +6,19 @@ CC		= cc
 CFLAGS  = -g -Wall -Wextra -Werror
 
 # Libft
-LIBFT_PATH	= libft_based/
+LIBFT_PATH	= libft/
 LIBFT_NAME	= libft.a
 LIBFT		= $(LIBFT_PATH)$(LIBFT_NAME)
 
 # Includes
 INC			=	-I ./includes/\
-				-I ./libft_based/
+				-I ./libft/
 
 # Sources  
 SRC_DIR		= src/
 SRC			= main.c \
-			  globals.c \
-			  bool.c \
-			  debug.c \
-			  env.c \
-			  execution_protocol.c exe_utils.c exe_pipes.c exe_pipe_utils.c \
-			  input.c \
-			  redirections.c redirections_apply.c redir_heredoc.c \
-			  signals.c \
-			  tokenize.c t_gather_word.c t_wildcard.c t_utils.c \
-			  parsing.c p_utils.c \
-			  quotes.c \
-			  var_utils.c \
-			  ft_bin.c \
-			  ft_cd.c ft_echo.c ft_env.c ft_exit.c ft_export.c ft_pwd.c ft_unset.c \
-			  exit_messages.c \
+
+
 # Objects
 OBJ_PATH	= obj/
 OBJ			= $(SRC:.c=.o)
