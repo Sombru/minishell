@@ -1,0 +1,14 @@
+input
+  ↓
+lexer
+  ↓
+tokens
+  ↓
+parser
+  ↓
+AST
+  ↓
+executor
+
+// true || (false && echo hi)
+// false && (true || echo A)

@@ -16,7 +16,7 @@ INC			=	-I ./includes/\
 
 # Sources  
 SRC_DIR		= src/
-SRC			= main.c \
+SRC			= main.c tokenize.c \
 
 
 # Objects

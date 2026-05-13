@@ -2,9 +2,17 @@
 
 int main()
 {
+	t_token* tokens;
+
 	while (1)
 	{
-		ft_printf("%s\n", readline(NULL));
+		char* input = readline(NULL);
+		tokens = tokenize(input);
+		while(tokens)
+		{
+			ft_printf("tok: %s\n", tokens->value);
+			tokens = tokens->next;
+		}
 
 	}
 }

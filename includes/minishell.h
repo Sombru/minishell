@@ -40,7 +40,56 @@
 # define C "\033[1;36m"   // bold cyan
 # define W "\033[1;37m"   // bold white
 
-// true || (false && echo hi)
-// false && (true || echo A)
 
+typedef enum e_token_type
+{
+	T_WORD,
+	T_AND,
+	T_OR,
+	T_PIPE,
+	T_LPAREN,
+	T_RPAREN,
+	T_REDIR_IN,
+	T_REDIR_OUT,
+	T_APPEND,
+	T_HEREDOC
+}	t_token_type;
+
+static const t_operator	g_operators[] = {
+	{"&&", T_AND},
+	{"||", T_OR},
+	{"|", T_PIPE},
+	{"(", T_LPAREN},
+	{")", T_RPAREN},
+	{"<<", T_HEREDOC},
+	{">>", T_APPEND},
+	{"<", T_REDIR_IN},
+	{">", T_REDIR_OUT},
+	{NULL, 0}
+};
+
+typedef struct s_operator
+{
+	char			*symbol;
+	t_token_type	type;
+}	t_operator;
+
+typedef struct s_token
+{
+	char			*value;
+	struct s_token	*next;
+	t_token_type	type;
+}	t_token;
+
+typedef enum e_node_type
+{
+	NODE_COMMAND,
+	NODE_AND,
+	NODE_OR,
+	NODE_SUBSHELL
+}	t_node_type;
+
+// tokenize
+
+t_token* tokenize(const char* input);
 #endif
