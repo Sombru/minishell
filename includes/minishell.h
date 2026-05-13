@@ -40,11 +40,12 @@
 # define C "\033[1;36m"   // bold cyan
 # define W "\033[1;37m"   // bold white
 
+# define TABLE_SIZE 10
 
 typedef enum e_token_type
 {
 	T_WORD,
-	T_AND,
+	T_AND, 
 	T_OR,
 	T_PIPE,
 	T_LPAREN,
@@ -55,18 +56,11 @@ typedef enum e_token_type
 	T_HEREDOC
 }	t_token_type;
 
-static const t_operator	g_operators[] = {
-	{"&&", T_AND},
-	{"||", T_OR},
-	{"|", T_PIPE},
-	{"(", T_LPAREN},
-	{")", T_RPAREN},
-	{"<<", T_HEREDOC},
-	{">>", T_APPEND},
-	{"<", T_REDIR_IN},
-	{">", T_REDIR_OUT},
-	{NULL, 0}
-};
+typedef struct s_token_table
+{
+	char key[2];
+	t_token_type value;
+} t_token_table ;
 
 typedef struct s_operator
 {
@@ -92,4 +86,8 @@ typedef enum e_node_type
 // tokenize
 
 t_token* tokenize(const char* input);
+t_token_table** fill_table(t_token_table* map[TABLE_SIZE]);
+void print_table(t_token_table* map[TABLE_SIZE]);
+int hash(const char *key);
+
 #endif

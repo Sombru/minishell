@@ -17,22 +17,43 @@ int	is_operator_char(char c)
 	);
 }
 
-t_token_type	get_operator_type(char *s, int *len)
+void print_table(t_token_table* map[TABLE_SIZE])
 {
-	int	i;
-
-	i = 0;
-	while (g_operators[i].symbol)
+	int i = 0;
+	ft_printf("Table\n");
+	while (i < TABLE_SIZE)
 	{
-		*len = strlen(g_operators[i].symbol);
-
-		if (ft_strncmp(s, g_operators[i].symbol, *len) == 0)
-			return (g_operators[i].type);
-
-		i++;
+		if (!map[i])
+			ft_printf("%d: ---------\n", i);
+		else
+			ft_printf("%d: %d\n", i, map[i]->value);
+		++i;
 	}
+}
 
-	return (T_WORD);
+t_token_table** fill_table(t_token_table *map[TABLE_SIZE])
+{
+	int i = 0;
+	while (i < TABLE_SIZE)
+	{
+		map[i] = 0;
+		++i;
+	}
+	return map;
+}
+
+bool insert_to_table(t_token_table* map)
+{
+	if (!map)
+		return false;
+}
+
+int hash(const char *key)
+{
+	static int hash_value = -1;
+	(void)key;
+	++hash_value;
+	return hash_value;
 }
 
 t_token* tokenize(const char* input)
@@ -50,5 +71,5 @@ t_token* tokenize(const char* input)
 
 	}
 	
-
+	return NULL;
 }
