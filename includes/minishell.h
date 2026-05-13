@@ -40,4 +40,7 @@
 # define C "\033[1;36m"   // bold cyan
 # define W "\033[1;37m"   // bold white
 
+// true || (false && echo hi)
+// false && (true || echo A)
+
 #endif
