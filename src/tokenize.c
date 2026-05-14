@@ -1,9 +1,9 @@
 #include "minishell.h"
 
-// static t_token add_token(const char* value, t_token_type type)
-// {
+static t_token* add_token(const char* value, t_token_type type)
+{
 
-// }
+}
 
 int	is_operator_char(char c)
 {
@@ -15,6 +15,21 @@ int	is_operator_char(char c)
 		|| c == '('
 		|| c == ')'
 	);
+}
+
+int	get_operator_length(t_token_type type)
+{
+	if (type == T_AND || type == T_OR)
+		return (2);
+	if (type == T_APPEND || type == T_HEREDOC)
+		return (2);
+	if (type == T_PIPE)
+		return (1);
+	if (type == T_LPAREN || type == T_RPAREN)
+		return (1);
+	if (type == T_REDIR_IN || type == T_REDIR_OUT)
+		return (1);
+	return (0);
 }
 
 t_token_type	get_operator_type(char *s)
@@ -42,21 +57,18 @@ t_token_type	get_operator_type(char *s)
 
 t_token* tokenize(const char* input)
 {
-	int i;
-
-	i = 0;
-	while (input[i])
+	t_token* tokens = malloc(sizeof(t_token));
+	while (*input)
 	{
-		if (ft_isspace(input[i]))
+		if (ft_isspace(*input))
 		{
-			++i;
+			++input;
 			continue ;
 		}
-		if (is_operator_char(input[i]))
+		if (is_operator_char(*input))
 		{
-			
+			tokens = add_token()
 		}
-
 	}
 	
 	return NULL;
