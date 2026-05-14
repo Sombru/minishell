@@ -17,43 +17,27 @@ int	is_operator_char(char c)
 	);
 }
 
-void print_table(t_token_table* map[TABLE_SIZE])
+t_token_type	get_operator_type(char *s)
 {
-	int i = 0;
-	ft_printf("Table\n");
-	while (i < TABLE_SIZE)
-	{
-		if (!map[i])
-			ft_printf("%d: ---------\n", i);
-		else
-			ft_printf("%d: %d\n", i, map[i]->value);
-		++i;
-	}
-}
-
-t_token_table** fill_table(t_token_table *map[TABLE_SIZE])
-{
-	int i = 0;
-	while (i < TABLE_SIZE)
-	{
-		map[i] = 0;
-		++i;
-	}
-	return map;
-}
-
-bool insert_to_table(t_token_table* map)
-{
-	if (!map)
-		return false;
-}
-
-int hash(const char *key)
-{
-	static int hash_value = -1;
-	(void)key;
-	++hash_value;
-	return hash_value;
+	if (!ft_strncmp(s, "&&", 2))
+		return (T_AND);
+	if (!ft_strncmp(s, "||", 2))
+		return (T_OR);
+	if (!ft_strncmp(s, "<<", 2))
+		return (T_HEREDOC);
+	if (!ft_strncmp(s, ">>", 2))
+		return (T_APPEND);
+	if (!ft_strncmp(s, "|", 1))
+		return (T_PIPE);
+	if (!ft_strncmp(s, "(", 1))
+		return (T_LPAREN);
+	if (!ft_strncmp(s, ")", 1))
+		return (T_RPAREN);
+	if (!ft_strncmp(s, "<", 1))
+		return (T_REDIR_IN);
+	if (!ft_strncmp(s, ">", 1))
+		return (T_REDIR_OUT);
+	return (T_WORD);
 }
 
 t_token* tokenize(const char* input)
@@ -67,6 +51,10 @@ t_token* tokenize(const char* input)
 		{
 			++i;
 			continue ;
+		}
+		if (is_operator_char(input[i]))
+		{
+			
 		}
 
 	}
