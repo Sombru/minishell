@@ -75,6 +75,10 @@ typedef enum e_node_type
 	NODE_SUBSHELL
 }	t_node_type;
 
+// debug
+
+void print_tokens(t_token* tokens);
+
 // tokenize
 
 t_token* tokenize(const char* input);

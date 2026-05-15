@@ -2,20 +2,14 @@
 
 int main()
 {
-	// t_token* tokens;
+	t_token* tokens;
 
 	while (1)
 	{
-		char* input = readline(NULL);
+		char* input = readline("minishell> ");
 		if (!input)
 			return 0;
-		free(input);
-		// tokens = tokenize(input);
-		// while(tokens)
-		// {
-			// ft_printf("tok: %s\n", tokens->value);
-			// tokens = tokens->next;
-		// }
-
+		tokens = tokenize(input);
+		print_tokens(tokens);	
 	}
 }
