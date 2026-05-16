@@ -25,5 +25,6 @@ primary
 command
     := WORD+
 
-// true || (false && echo hi)
-// false && (true || echo A)
+true || (false && echo hi)
+false && (true || echo A)
+false || (echo B  && echo C) && echo D

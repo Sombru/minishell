@@ -2,8 +2,7 @@
 
 int main()
 {
-	t_token* tokens;
-	t_ast_node* ast;
+	t_shell shell;
 
 	while (1)
 	{
@@ -11,8 +10,9 @@ int main()
 		if (!input)
 			return 0;
 		add_history(input);
-		tokens = tokenize(input);
-		print_tokens(tokens);
-		ast = parse(tokens);
+		tokenize(input, &shell);
+		// print_tokens(shell.tokens);
+		parse(&shell);
+		print_ast(shell.ast);
 	}
 }

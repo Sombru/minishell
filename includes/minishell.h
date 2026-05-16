@@ -73,23 +73,37 @@ typedef enum e_node_type
 typedef struct s_ast_node
 {
 	t_node_type type; // type of node 
-	t_ast_node* left;
-	t_ast_node* right;
+	struct s_ast_node* left;
+	struct s_ast_node* right;
 	// t_redirections // redirection structure not planned yet
 	char** arguments; // list of arugments for shell to execute (word tokens)
 	
 } t_ast_node ;
 
 
+typedef struct s_shell
+{
+	struct		s_token* 	tokens;
+	int			token_count;
+	t_ast_node*	ast;
+} t_shell ;
+
+
 // debug
 
-void print_tokens(t_token* tokens);
+void	print_tokens(t_token* tokens);
+void	print_ast(t_ast_node *ast);
 
 // tokenize
 
-t_token* tokenize(char* input);
-int	is_operator_char(char c);
+void	tokenize(char* input, t_shell* shell);
+int		is_operator_char(char c);
 char	*gather_word(char *input);
 
+// parse
+
+void parse(t_shell* shell);
+t_ast_node	*parse_primary(t_token **current, int token_count);
+t_ast_node	*parse_logical(t_token **current, int token_count);
 
 #endif

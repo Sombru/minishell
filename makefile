@@ -16,7 +16,7 @@ INC			=	-I ./includes/\
 
 # Sources  
 SRC_DIR		= src/
-SRC			= main.c tokenize.c debug.c t_gather_word.c \
+SRC			= main.c tokenize.c debug.c t_gather_word.c parse.c\
 
 
 # Objects

@@ -99,10 +99,12 @@ static void add_word_token(t_token** tokens, char** input)
 	current->next = new_token;
 }
 
-t_token* tokenize(char* input)
+void tokenize(char* input, t_shell* shell)
 {
 	t_token* tokens;
+	int count;
 
+	count = 0;
 	tokens = NULL;
 	while (*input)
 	{
@@ -120,6 +122,6 @@ t_token* tokenize(char* input)
 		}
 		++input;
 	}
-	
-	return tokens;
+	shell->token_count = count;
+	shell->tokens = tokens;
 }
