@@ -54,12 +54,6 @@ typedef enum e_token_type
 	T_HEREDOC
 }	t_token_type;
 
-typedef struct s_operator
-{
-	char			*symbol;
-	t_token_type	type;
-}	t_operator;
-
 typedef struct s_token
 {
 	char			*value;
@@ -72,8 +66,20 @@ typedef enum e_node_type
 	NODE_COMMAND,
 	NODE_AND,
 	NODE_OR,
+	NODE_PIPE,
 	NODE_SUBSHELL
 }	t_node_type;
+
+typedef struct s_ast_node
+{
+	t_node_type type; // type of node 
+	t_ast_node* left;
+	t_ast_node* right;
+	// t_redirections // redirection structure not planned yet
+	char** arguments; // list of arugments for shell to execute (word tokens)
+	
+} t_ast_node ;
+
 
 // debug
 
@@ -81,8 +87,9 @@ void print_tokens(t_token* tokens);
 
 // tokenize
 
-t_token* tokenize(const char* input);
-
+t_token* tokenize(char* input);
+int	is_operator_char(char c);
+char	*gather_word(char *input);
 
 
 #endif

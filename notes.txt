@@ -1,14 +1,29 @@
 input
   ↓
-lexer
+lexer -> 
   ↓
-tokens
+tokens -> handle syntax(unclosed parenthesis/quotes), unmatched quotes
   ↓
-parser
+parser -> parser validates while building AST (recursive descent parser)
   ↓
 AST
   ↓
 executor
+
+expression
+    := logical
+
+logical
+    := primary
+    | logical && primary
+    | logical || primary
+
+primary
+    := command
+    | '(' logical ')'
+
+command
+    := WORD+
 
 // true || (false && echo hi)
 // false && (true || echo A)

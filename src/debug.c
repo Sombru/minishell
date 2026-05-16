@@ -31,11 +31,11 @@ void print_tokens(t_token* tokens)
 	ft_printf("=======tokens======\n");
 	if (!tokens)
 		ft_printf("NONE");
-	while (tokens->next)
+	while (tokens)
 	{
 		ft_printf("%d. %s:%s\n", i, type_to_str(tokens), tokens->value);
 		tokens = tokens->next;
 		++i;
 	}
-	ft_printf("=======end=======\n");
+	ft_printf("========end========\n");
 }

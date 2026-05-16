@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static int	is_operator_char(char c)
+int	is_operator_char(char c)
 {
 	return (
 		c == '&'
@@ -51,15 +51,16 @@ static t_token_type	get_operator_type(const char *s)
 }
 
 
-static void add_token(t_token** tokens, const char* input)
+static void add_oprator_token(t_token** tokens, char** input)
 {
 	t_token* new_token = malloc(sizeof(t_token));
 	t_token* current;
 	t_token_type type;
 	char* value;
 
-	type = get_operator_type(input);
-	value = ft_strndup(input, get_operator_length(type));
+	type = get_operator_type(*input);
+	value = ft_strndup(*input, get_operator_length(type));
+	*input += ft_strlen(value);
 	new_token->next = NULL;
 	new_token->type = type;
 	new_token->value = value;
@@ -74,8 +75,31 @@ static void add_token(t_token** tokens, const char* input)
 	current->next = new_token;
 }
 
+static void add_word_token(t_token** tokens, char** input)
+{
+	t_token* new_token = malloc(sizeof(t_token));
+	t_token* current;
+	t_token_type type;
+	char* value;
 
-t_token* tokenize(const char* input)
+	type = T_WORD;
+	value = gather_word(*input);
+	*input += ft_strlen(value);
+	new_token->next = NULL;
+	new_token->type = type;
+	new_token->value = value;
+	if (!*tokens)
+	{
+		*tokens = new_token;
+		return ;
+	}
+	current = *tokens;
+	while (current->next)
+		current = current->next;
+	current->next = new_token;
+}
+
+t_token* tokenize(char* input)
 {
 	t_token* tokens;
 
@@ -85,9 +109,15 @@ t_token* tokenize(const char* input)
 		if (ft_isspace(*input))
 			++input;
 		if (is_operator_char(*input))
-			add_token(&tokens, input);
+		{
+			add_oprator_token(&tokens, &input);
+			continue ;
+		}
 		else
-			add_token(&tokens, input);
+		{
+			add_word_token(&tokens, &input);
+			continue ;
+		}
 		++input;
 	}
 	
