@@ -28,7 +28,7 @@ void print_tokens(t_token* tokens)
 	int i;
 
 	i = 0;
-	ft_printf("=======tokens======\n");
+	ft_printf("====== TOKENS =====\n");
 	if (!tokens)
 		ft_printf("NONE");
 	while (tokens)
@@ -37,7 +37,7 @@ void print_tokens(t_token* tokens)
 		tokens = tokens->next;
 		++i;
 	}
-	ft_printf("========end========\n");
+	ft_printf("===================\n");
 }
 
 static void	print_indent(int depth)

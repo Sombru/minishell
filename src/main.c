@@ -11,7 +11,7 @@ int main()
 			return 0;
 		add_history(input);
 		tokenize(input, &shell);
-		// print_tokens(shell.tokens);
+		print_tokens(shell.tokens);
 		parse(&shell);
 		print_ast(shell.ast);
 	}

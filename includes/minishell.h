@@ -70,6 +70,22 @@ typedef enum e_node_type
 	NODE_SUBSHELL
 }	t_node_type;
 
+typedef enum s_redir_type
+{
+	R_REDIR_IN,
+	R_REDIR_OUT,
+	R_APPEND,
+	R_HEREDOC
+} t_redir_type ;
+
+typedef struct s_redirection
+{
+	t_redir_type type;
+	char* destination;
+	struct s_redirection* next;
+} t_redirection ;
+
+
 typedef struct s_ast_node
 {
 	t_node_type type; // type of node 
