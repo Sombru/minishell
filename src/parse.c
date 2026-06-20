@@ -14,16 +14,22 @@ static t_node_type get_node_type(t_token_type type)
 		return (NODE_OR);
 	if (type == T_PIPE)
 		return (NODE_PIPE);
-	// if (type == T_LPAREN)
-		// return (NODE_SUBSHELL);
-	// if (type == T_RPAREN)
-		// return ("T_RPAREN");
+	if (type == T_LPAREN)
+		return (NODE_SUBSHELL);
 	return (-1);
 }
 
-static t_ast_node* add_node(t_node_type type, char** args)
+static bool is_redirection_token(t_token_type type)
 {
-	t_ast_node* new_node;
+	return (type == T_APPEND ||
+		type == T_REDIR_IN ||
+		type == T_REDIR_OUT ||
+		type == T_REDIR_OUT)
+}
+
+static t_ast_node *add_node(t_node_type type, char **args)
+{
+	t_ast_node *new_node;
 
 	new_node = malloc(sizeof(t_ast_node));
 
@@ -34,20 +40,27 @@ static t_ast_node* add_node(t_node_type type, char** args)
 	return new_node;
 }
 
-static t_ast_node	*parse_command(t_token **current, int token_count)
+static t_ast_node *parse_command(t_token **current, int token_count)
 {
-	char	**args;
-	int		arg_count;
+	char **args;
+	int arg_count;
+	t_redirection *redirection;
 
+	redirection = NULL; // myabe there is a better way to do this
 	args = malloc(sizeof(char *) * (token_count + 1));
 	if (!args)
 		return (NULL);
 
 	arg_count = 0;
-	while ((*current) && (*current)->type == T_WORD)
+	while ((*current) && (*current)->type == T_WORD || is_redirection_token((*current)->type))
 	{
-		args[arg_count] = ft_strdup((*current)->value);
-		arg_count++;
+		if (is_redirection_token((*current)->type))
+			add_redirection((*current)->type); // #TODO add redirections to the command node
+		else
+		{
+			args[arg_count] = ft_strdup((*current)->value);
+			arg_count++;
+		}
 		*current = (*current)->next;
 	}
 
@@ -61,9 +74,9 @@ static t_ast_node	*parse_command(t_token **current, int token_count)
 // 	return (parse_logical(current));
 // }
 
-t_ast_node	*parse_primary(t_token **current, int token_count)
+t_ast_node *parse_primary(t_token **current, int token_count)
 {
-	t_ast_node	*node;
+	t_ast_node *node;
 
 	if ((*current) && (*current)->type == T_LPAREN)
 	{
@@ -82,18 +95,16 @@ t_ast_node	*parse_primary(t_token **current, int token_count)
 	return (parse_command(current, token_count));
 }
 
-t_ast_node	*parse_logical(t_token **current, int token_count)
+t_ast_node *parse_logical(t_token **current, int token_count)
 {
-	t_ast_node	*left;
-	t_ast_node	*right;
-	t_ast_node	*node;
-	t_node_type	op;
+	t_ast_node *left;
+	t_ast_node *right;
+	t_ast_node *node;
+	t_node_type op;
 
 	left = parse_primary(current, token_count);
 
-	while ((*current)
-		&& ((*current)->type == T_AND
-		|| (*current)->type == T_OR))
+	while ((*current) && ((*current)->type == T_AND || (*current)->type == T_OR))
 	{
 		op = get_node_type((*current)->type);
 		*current = (*current)->next;
@@ -110,7 +121,7 @@ t_ast_node	*parse_logical(t_token **current, int token_count)
 	return (left);
 }
 
-void parse(t_shell* shell)
+void parse(t_shell *shell)
 {
 	shell->ast = parse_logical(&shell->tokens, shell->token_count);
 }

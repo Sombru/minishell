@@ -6,44 +6,44 @@
 /*   By: pkostura <pkostura@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:59:18 by nspalevi          #+#    #+#             */
-/*   Updated: 2025/01/29 13:16:07 by pkostura         ###   ########.fr       */
+/*   Updated: 2026/06/20 19:59:32 by pkostura         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
-# define MINISHELL_H
+#define MINISHELL_H
 
-# include "../libft/libft.h"
-# include <ctype.h>
-# include <dirent.h>
-# include <errno.h>
-# include <fcntl.h>
-# include <limits.h>
-# include <readline/history.h>
-# include <readline/readline.h>
-# include <signal.h>
-# include <stdbool.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <sys/types.h>
-# include <sys/wait.h>
-# include <termios.h>
-# include <unistd.h>
+#include "../libft/libft.h"
+#include <ctype.h>
+#include <dirent.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <limits.h>
+#include <readline/history.h>
+#include <readline/readline.h>
+#include <signal.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <termios.h>
+#include <unistd.h>
 
-# define RST "\033[0m"    // reset to default color
-# define RED "\033[1;31m" // bold red
-# define G "\033[1;32m"   // bold green
-# define Y "\033[1;33m"   // bold Yellow
-# define B "\033[1;34m"   // bold blue
-# define M "\033[1;35m"   // bold magenta
-# define C "\033[1;36m"   // bold cyan
-# define W "\033[1;37m"   // bold white
+#define RST "\033[0m"	 // reset to default color
+#define RED "\033[1;31m" // bold red
+#define G "\033[1;32m"	 // bold green
+#define Y "\033[1;33m"	 // bold Yellow
+#define B "\033[1;34m"	 // bold blue
+#define M "\033[1;35m"	 // bold magenta
+#define C "\033[1;36m"	 // bold cyan
+#define W "\033[1;37m"	 // bold white
 
 typedef enum e_token_type
 {
 	T_WORD,
-	T_AND, 
+	T_AND,
 	T_OR,
 	T_PIPE,
 	T_LPAREN,
@@ -52,14 +52,14 @@ typedef enum e_token_type
 	T_REDIR_OUT,
 	T_APPEND,
 	T_HEREDOC
-}	t_token_type;
+} t_token_type;
 
 typedef struct s_token
 {
-	char			*value;
-	struct s_token	*next;
-	t_token_type	type;
-}	t_token;
+	char *value;
+	struct s_token *next;
+	t_token_type type;
+} t_token;
 
 typedef enum e_node_type
 {
@@ -68,7 +68,7 @@ typedef enum e_node_type
 	NODE_OR,
 	NODE_PIPE,
 	NODE_SUBSHELL
-}	t_node_type;
+} t_node_type;
 
 typedef enum s_redir_type
 {
@@ -76,50 +76,47 @@ typedef enum s_redir_type
 	R_REDIR_OUT,
 	R_APPEND,
 	R_HEREDOC
-} t_redir_type ;
+} t_redir_type;
 
 typedef struct s_redirection
 {
 	t_redir_type type;
-	char* destination;
-	struct s_redirection* next;
-} t_redirection ;
-
+	char *destination;
+	struct s_redirection *next;
+} t_redirection;
 
 typedef struct s_ast_node
 {
-	t_node_type type; // type of node 
-	struct s_ast_node* left;
-	struct s_ast_node* right;
-	// t_redirections // redirection structure not planned yet
-	char** arguments; // list of arugments for shell to execute (word tokens)
-	
-} t_ast_node ;
+	t_node_type type; // type of node
+	struct s_ast_node *left;
+	struct s_ast_node *right;
+	struct s_redirection *redirections;// redirection structure not planned yet
+	char **arguments; // list of arugments for shell to execute (word tokens)
 
+} t_ast_node;
 
 typedef struct s_shell
 {
-	struct		s_token* 	tokens;
-	int			token_count;
-	t_ast_node*	ast;
-} t_shell ;
-
+	struct s_token *tokens;
+	int token_count;
+	t_ast_node *ast;
+} t_shell;
 
 // debug
 
-void	print_tokens(t_token* tokens);
-void	print_ast(t_ast_node *ast);
+void print_tokens(t_token *tokens);
+void print_ast(t_ast_node *ast);
 
 // tokenize
 
-void	tokenize(char* input, t_shell* shell);
-int		is_operator_char(char c);
-char	*gather_word(char *input);
+void tokenize(char *input, t_shell *shell);
+int is_operator_char(char c);
+char *gather_word(char *input);
 
 // parse
 
-void parse(t_shell* shell);
-t_ast_node	*parse_primary(t_token **current, int token_count);
-t_ast_node	*parse_logical(t_token **current, int token_count);
+void parse(t_shell *shell);
+t_ast_node *parse_primary(t_token **current, int token_count);
+t_ast_node *parse_logical(t_token **current, int token_count);
 
 #endif
